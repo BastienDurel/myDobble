@@ -11,6 +11,10 @@ public class Item {
 	public boolean equals(Object o) {
 		return (o instanceof Item) && ((Item) o).id == id;
 	}
+	
+	public void toPDF(PDF out) {
+		
+	}
 
 	private static int lastId = 0;
 
