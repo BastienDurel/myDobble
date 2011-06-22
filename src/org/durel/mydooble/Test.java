@@ -9,7 +9,7 @@ public class Test {
 	 */
 	public static void main(String[] args) {
 		Core t = new Core(2);
-		t.log.setLevel(Level.WARNING);
+		t.log.setLevel(Level.INFO);
 		t.log.info("test ...");
 		t.add(new Item());
 		t.add(new Item());
