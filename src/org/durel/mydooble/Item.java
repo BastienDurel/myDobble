@@ -18,7 +18,6 @@ public class Item {
 	}
 	
 	public void toPDF(PDF out) {
-		
 	}
 
 	private static int lastId = 0;

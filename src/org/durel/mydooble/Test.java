@@ -66,6 +66,9 @@ public class Test {
 		
 		try {
 			t.build();
+			PDF p = new PDF();
+			p.newPage();
+			p.doc.save("/tmp/test.pdf");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

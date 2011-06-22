@@ -24,31 +24,6 @@ public class Core {
 	protected static Random rnd = new Random();
 	Logger log = Logger.getLogger("org.durel.mydooble");
 
-	static protected class Card {
-		Item syms[];
-		int nb = 0;
-
-		public Card(int aNbItems) {
-			syms = new Item[aNbItems];
-		}
-
-		public boolean have(int c) {
-			for (int i = 0; i < nb; ++i) {
-				if (c == syms[i].id)
-					return true;
-			}
-			return false;
-		}
-
-		public void add(Item i) {
-			syms[nb++] = i;
-		}
-
-		public boolean isFull() {
-			return nb == syms.length;
-		}
-	}
-
 	protected class LogWriter extends OutputStream {
 		Logger log;
 		StringBuffer b = new StringBuffer();
@@ -108,16 +83,26 @@ public class Core {
 	public void build() throws Exception {
 		if (isCoherent())
 			throw new Exception("Incoherent stock");
+
+		List<Card> l = null;
 		int test = 0;
 		do {
 			try {
-				subBuild();
+				l = subBuild();
 				test = 15;
 			} catch (Exception e) {
 				if (++test == 15)
 					throw e;
 			}
 		} while (test < 15);
+		PDF out = new PDF();
+
+		ListIterator<Card> it = l.listIterator();
+		while (it.hasNext()) {
+			Card c = it.next();
+			c.toPDF(out);
+		}
+		out.save("/tmp/test.pdf");
 	}
 
 	private ArrayList<Card> subBuild() throws Exception {
