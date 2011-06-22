@@ -3,6 +3,11 @@ package org.durel.mydooble;
 public class Item {
 	int id = getNextId();
 
+	@Override
+	public String toString() {
+		return "Item[" + id + "]";
+	}
+	
 	boolean equals(Item i) {
 		return i.id == id;
 	}
