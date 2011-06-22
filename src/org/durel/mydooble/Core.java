@@ -3,6 +3,8 @@
  */
 package org.durel.mydooble;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +46,30 @@ public class Core {
 
 		public boolean isFull() {
 			return nb == syms.length;
+		}
+	}
+
+	protected class LogWriter extends OutputStream {
+		Logger log;
+		StringBuffer b = new StringBuffer();
+
+		LogWriter(Logger log) {
+			this.log = log;
+		}
+
+		@Override
+		public void write(int b) throws IOException {
+			char c = (char) b;
+			if (c == '\n')
+				flush();
+			else
+				this.b.append(c);
+		}
+
+		@Override
+		public void flush() {
+			log.info(b.toString());
+			b = new StringBuffer();
 		}
 	}
 
@@ -94,7 +120,7 @@ public class Core {
 		} while (test < 15);
 	}
 
-	private void subBuild() throws Exception {
+	private ArrayList<Card> subBuild() throws Exception {
 		int nbCards = itemStock.size() * 2 / nbItems;
 		ArrayList<Card> l = new ArrayList<Card>(nbCards);
 		ArrayList<Integer> k = new ArrayList<Integer>(nbCards);
@@ -120,8 +146,9 @@ public class Core {
 			if (l.get(c).isFull())
 				k.remove(new Integer(c));
 			if (l.get(d).isFull())
-				k.remove(new Integer(d));			
+				k.remove(new Integer(d));
 		}
-		print(l);		
+		print(l, new PrintStream(new LogWriter(log)));
+		return l;
 	}
 }
