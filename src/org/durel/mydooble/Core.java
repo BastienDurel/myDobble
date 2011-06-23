@@ -136,4 +136,10 @@ public class Core {
 		print(l, new PrintStream(new LogWriter(log)));
 		return l;
 	}
+
+	public void reset(int value) {
+		// TODO Auto-generated method stub
+		nbItems = value;
+		itemStock.clear();
+	}
 }
