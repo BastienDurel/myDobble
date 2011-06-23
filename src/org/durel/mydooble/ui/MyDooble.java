@@ -12,6 +12,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.durel.mydooble.Core;
+import org.durel.mydooble.PDF;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -51,7 +52,6 @@ public class MyDooble extends javax.swing.JFrame {
 
 	private ButtonGroup grp = new ButtonGroup();
 	private final Core core = new Core(4);
-	private SpinnerHandler spinnerHandler = new SpinnerHandler();
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -69,6 +69,7 @@ public class MyDooble extends javax.swing.JFrame {
 	public MyDooble() {
 		super();
 		initGUI();
+		checkValid();
 	}
 
 	private void initGUI() {
@@ -89,6 +90,7 @@ public class MyDooble extends javax.swing.JFrame {
 								new Insets(0, 0, 0, 0), 0, 0));
 				jRadioText.setLayout(null);
 				jRadioText.setText("Texte");
+				jRadioText.setSelected(true);
 				grp.add(jRadioText);
 			}
 			{
@@ -205,7 +207,13 @@ public class MyDooble extends javax.swing.JFrame {
 								GridBagConstraints.HORIZONTAL, new Insets(0, 0,
 										0, 0), 0, 0));
 				jSpinnerNbItems.setModel(jSpinnerNbItemsModel);
-				jSpinnerNbItems.addChangeListener(spinnerHandler);
+				jSpinnerNbItems.addChangeListener(new ChangeListener() {
+					@Override
+					public void stateChanged(ChangeEvent e) {
+						core.reset((Integer) jSpinnerNbItems.getValue());
+						checkValid();
+					}
+				});
 			}
 			{
 				jButtonMake = new JButton();
@@ -216,8 +224,28 @@ public class MyDooble extends javax.swing.JFrame {
 								GridBagConstraints.NONE,
 								new Insets(0, 0, 0, 0), 0, 0));
 				jButtonMake.setText("Générer");
+				jButtonMake.addActionListener(new ActionListener() {
+					
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						doMake();
+					}
+				});
 			}
 			setSize(400, 300);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	protected void doMake() {
+		try {
+			JFileChooser chooser = new JFileChooser();
+			chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+			int returnVal = chooser.showOpenDialog(this);
+			if (returnVal == JFileChooser.APPROVE_OPTION) {
+				core.build(chooser.getSelectedFile());
+			}
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -234,15 +262,6 @@ public class MyDooble extends javax.swing.JFrame {
 
 	protected void checkValid() {
 		jButtonMake.setEnabled(core.isCoherent());
-	}
-
-	class SpinnerHandler implements ChangeListener {
-
-		@Override
-		public void stateChanged(ChangeEvent e) {
-			core.reset((Integer) jSpinnerNbItems.getValue());
-			checkValid();
-		}
 	}
 
 }

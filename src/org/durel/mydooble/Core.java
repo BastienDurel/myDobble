@@ -3,6 +3,7 @@
  */
 package org.durel.mydooble;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
@@ -57,6 +58,8 @@ public class Core {
 	}
 
 	public boolean isCoherent() {
+		if (itemStock.isEmpty())
+			return false;
 		return itemStock.size() * 2 % nbItems != 0;
 	}
 
@@ -80,7 +83,11 @@ public class Core {
 		}
 	}
 
-	public void build() throws Exception {
+	public void build(String filename) throws Exception {
+		build(new File(filename));
+	}
+
+	public void build(File file) throws Exception {
 		if (isCoherent())
 			throw new Exception("Incoherent stock");
 
