@@ -2,17 +2,21 @@ package org.durel.mydooble.ui;
 
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.logging.ConsoleHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.durel.mydooble.Core;
-import org.durel.mydooble.PDF;
+import org.durel.mydooble.Test.PlainFormatter;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -52,6 +56,7 @@ public class MyDooble extends javax.swing.JFrame {
 
 	private ButtonGroup grp = new ButtonGroup();
 	private final Core core = new Core(4);
+	Logger log = Logger.getLogger("org.durel.mydooble");
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -70,6 +75,13 @@ public class MyDooble extends javax.swing.JFrame {
 		super();
 		initGUI();
 		checkValid();
+		selectText();
+
+		log.setLevel(Level.INFO);
+		log.setUseParentHandlers(false);
+		ConsoleHandler h = new ConsoleHandler();
+		h.setFormatter(new PlainFormatter());
+		log.addHandler(h);
 	}
 
 	private void initGUI() {
@@ -91,6 +103,12 @@ public class MyDooble extends javax.swing.JFrame {
 				jRadioText.setLayout(null);
 				jRadioText.setText("Texte");
 				jRadioText.setSelected(true);
+				jRadioText.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						selectText();
+					}
+				});
 				grp.add(jRadioText);
 			}
 			{
@@ -103,6 +121,12 @@ public class MyDooble extends javax.swing.JFrame {
 								GridBagConstraints.NONE,
 								new Insets(0, 0, 0, 0), 0, 0));
 				jRadioGlyph.setText("Images");
+				jRadioGlyph.addActionListener(new ActionListener() {
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						selectGlyph();
+					}
+				});
 				grp.add(jRadioGlyph);
 			}
 			{
@@ -126,8 +150,6 @@ public class MyDooble extends javax.swing.JFrame {
 				jLabelTo.setText("Sélectionnés");
 			}
 			{
-				ListModel jListFromModel = new DefaultComboBoxModel(
-						new String[] {});
 				jListFrom = new JList();
 				jLabelFrom.setLabelFor(jListFrom);
 				getContentPane().add(
@@ -136,7 +158,8 @@ public class MyDooble extends javax.swing.JFrame {
 								GridBagConstraints.CENTER,
 								GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 0), 0, 0));
-				jListFrom.setModel(jListFromModel);
+				jListFrom.setModel(fromModel);
+				jListFrom.setCellRenderer(new DoobleCellRenderer());
 			}
 			{
 				ListModel jListToModel = new DefaultComboBoxModel(
@@ -150,6 +173,7 @@ public class MyDooble extends javax.swing.JFrame {
 								GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 0), 0, 0));
 				jListTo.setModel(jListToModel);
+				jListTo.setCellRenderer(new DoobleCellRenderer());
 			}
 			{
 				jTextNewLabel = new JTextField();
@@ -225,7 +249,7 @@ public class MyDooble extends javax.swing.JFrame {
 								new Insets(0, 0, 0, 0), 0, 0));
 				jButtonMake.setText("Générer");
 				jButtonMake.addActionListener(new ActionListener() {
-					
+
 					@Override
 					public void actionPerformed(ActionEvent e) {
 						doMake();
@@ -236,6 +260,24 @@ public class MyDooble extends javax.swing.JFrame {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+	}
+
+	protected void selectGlyph() {
+		jTextNewLabel.setEnabled(false);
+		jButtonLoad.setEnabled(true);
+		core.reset();
+		fromModel.isGlyph = true;
+		fromModel.clear();
+		// TODO
+	}
+
+	protected void selectText() {
+		jTextNewLabel.setEnabled(true);
+		jButtonLoad.setEnabled(false);
+		core.reset();
+		fromModel.isGlyph = false;
+		fromModel.clear();
+		// TODO
 	}
 
 	protected void doMake() {
@@ -251,12 +293,30 @@ public class MyDooble extends javax.swing.JFrame {
 		}
 	}
 
+	protected DoobleListModel fromModel = new DoobleListModel();
+
+	protected void loadDir(File dir) {
+		String[] children = dir.list();
+		if (children != null) {
+			fromModel.clear();
+			for (int i = 0; i < children.length; ++i) {
+				if (children[i].toLowerCase().endsWith(".jpg")
+						|| children[i].toLowerCase().endsWith(".tiff")) {
+					String img = dir.getAbsolutePath() + File.separatorChar
+							+ children[i];
+					fromModel.add(img);
+					log.info(img);
+				}
+			}
+		}
+	}
+
 	protected void chooseFile() {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			// TODO
+			loadDir(chooser.getSelectedFile());
 		}
 	}
 

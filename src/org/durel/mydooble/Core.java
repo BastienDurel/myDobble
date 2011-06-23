@@ -144,8 +144,11 @@ public class Core {
 		return l;
 	}
 
+	public void reset() {
+		reset(nbItems);
+	}
+	
 	public void reset(int value) {
-		// TODO Auto-generated method stub
 		nbItems = value;
 		itemStock.clear();
 	}

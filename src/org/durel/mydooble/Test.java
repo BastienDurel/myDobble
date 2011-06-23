@@ -6,7 +6,7 @@ import java.util.logging.LogRecord;
 
 public class Test {
 	
-	static class PlainFormatter extends java.util.logging.Formatter {
+	static public class PlainFormatter extends java.util.logging.Formatter {
 
 		@Override
 		public String format(LogRecord record) {
