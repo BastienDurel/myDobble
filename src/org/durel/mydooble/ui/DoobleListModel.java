@@ -13,11 +13,27 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 
 public class DoobleListModel extends AbstractListModel {
+	
+	public static class Image {
+		BufferedImage picture;
+		String name;
+		
+		Image(BufferedImage i, String n) {
+			picture = i;
+			name = n;
+		}
+		
+		@Override
+		public String toString() {
+			return name;
+		}
+	}
+	
 	private static final long serialVersionUID = 3785607490873542718L;
 	static final int WIDTH = 32;
 	static final int HEIGHT = 32;
 	protected ArrayList<String> model = new ArrayList<String>();
-	protected Map<String, BufferedImage> cache = new HashMap<String, BufferedImage>();
+	protected Map<String, Image> cache = new HashMap<String, Image>();
 
 	boolean isGlyph = false;
 
@@ -39,8 +55,8 @@ public class DoobleListModel extends AbstractListModel {
 				Graphics2D g = resized.createGraphics();
 				g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
 				g.dispose();
-				cache.put(key, resized);
-				return image;
+				cache.put(key, new Image(resized, input.getName()));
+				return cache.get(key);
 			} catch (IOException e) {
 				Logger log = Logger.getLogger("org.durel.mydooble");
 				log.warning(e.getLocalizedMessage());

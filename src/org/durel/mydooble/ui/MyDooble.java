@@ -5,8 +5,9 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.File;
-import java.util.ArrayList;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -56,6 +57,8 @@ public class MyDooble extends javax.swing.JFrame {
 
 	private ButtonGroup grp = new ButtonGroup();
 	private final Core core = new Core(4);
+	protected DoobleListModel fromModel = new DoobleListModel();
+	protected DoobleListModel toModel = new DoobleListModel();
 	Logger log = Logger.getLogger("org.durel.mydooble");
 
 	/**
@@ -92,6 +95,11 @@ public class MyDooble extends javax.swing.JFrame {
 			thisLayout.columnWeights = new double[] { 0.1, 0.1 };
 			thisLayout.columnWidths = new int[] { 7, 7 };
 			getContentPane().setLayout(thisLayout);
+			this.addWindowListener(new WindowAdapter() {
+				public void windowClosing(WindowEvent evt) {
+					System.exit(0);
+				}
+			});
 			{
 				jRadioText = new JRadioButton();
 				getContentPane().add(
@@ -151,29 +159,31 @@ public class MyDooble extends javax.swing.JFrame {
 			}
 			{
 				jListFrom = new JList();
+				JScrollPane scrollPane = new JScrollPane(jListFrom);
 				jLabelFrom.setLabelFor(jListFrom);
 				getContentPane().add(
-						jListFrom,
+						scrollPane,
 						new GridBagConstraints(0, 2, 1, 1, 0.0, 10.0,
 								GridBagConstraints.CENTER,
 								GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 0), 0, 0));
 				jListFrom.setModel(fromModel);
 				jListFrom.setCellRenderer(new DoobleCellRenderer());
+				jListFrom.setDragEnabled(true);
 			}
 			{
-				ListModel jListToModel = new DefaultComboBoxModel(
-						new String[] {});
 				jListTo = new JList();
 				jLabelTo.setLabelFor(jListTo);
+				JScrollPane scrollPane = new JScrollPane(jListTo);
 				getContentPane().add(
-						jListTo,
+						scrollPane,
 						new GridBagConstraints(1, 2, 1, 1, 0.0, 10.0,
 								GridBagConstraints.CENTER,
 								GridBagConstraints.BOTH,
 								new Insets(0, 0, 0, 0), 0, 0));
-				jListTo.setModel(jListToModel);
+				jListTo.setModel(toModel);
 				jListTo.setCellRenderer(new DoobleCellRenderer());
+				jListTo.setDropMode(DropMode.INSERT);
 			}
 			{
 				jTextNewLabel = new JTextField();
@@ -292,8 +302,6 @@ public class MyDooble extends javax.swing.JFrame {
 			e.printStackTrace();
 		}
 	}
-
-	protected DoobleListModel fromModel = new DoobleListModel();
 
 	protected void loadDir(File dir) {
 		String[] children = dir.list();
