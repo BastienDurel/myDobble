@@ -3,11 +3,20 @@ package org.durel.mydooble.ui;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.datatransfer.UnsupportedFlavorException;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDragEvent;
+import java.awt.dnd.DropTargetDropEvent;
+import java.awt.dnd.DropTargetEvent;
+import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -169,6 +178,7 @@ public class MyDooble extends javax.swing.JFrame {
 								new Insets(0, 0, 0, 0), 0, 0));
 				jListFrom.setModel(fromModel);
 				jListFrom.setCellRenderer(new DoobleCellRenderer());
+				jListFrom.setTransferHandler(new DoobleTransferHandler());
 				jListFrom.setDragEnabled(true);
 			}
 			{
@@ -184,6 +194,31 @@ public class MyDooble extends javax.swing.JFrame {
 				jListTo.setModel(toModel);
 				jListTo.setCellRenderer(new DoobleCellRenderer());
 				jListTo.setDropMode(DropMode.INSERT);
+				jListTo.setDropTarget(new DropTarget());
+				jListTo.getDropTarget().setActive(true);
+				jListTo.getDropTarget().addDropTargetListener(new DropTargetListener() {
+					
+					@Override
+					public void dropActionChanged(DropTargetDragEvent dtde) {
+					}
+					
+					@Override
+					public void drop(DropTargetDropEvent dtde) {
+						dropTo(dtde);
+					}
+					
+					@Override
+					public void dragOver(DropTargetDragEvent dtde) {
+					}
+					
+					@Override
+					public void dragExit(DropTargetEvent dte) {						
+					}
+					
+					@Override
+					public void dragEnter(DropTargetDragEvent dtde) {
+					}
+				});
 			}
 			{
 				jTextNewLabel = new JTextField();
@@ -269,6 +304,25 @@ public class MyDooble extends javax.swing.JFrame {
 			setSize(400, 300);
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+	}
+
+	protected void dropTo(DropTargetDropEvent dtde) {
+		// TODO Auto-generated method stub
+		log.info("drop: " + dtde);
+		Transferable t = dtde.getTransferable();
+		log.info("transferable: " + t + " (" + t.getClass() + ")");
+		DataFlavor f[] = t.getTransferDataFlavors();
+		log.info("f: " + f + " (" + f.length + ")");
+		for (int i = 0; i < f.length; ++i) {
+			try {
+				Object transferData = t.getTransferData(f[i]);
+				log.info("-> " + f[i] + " -> " + transferData);
+			} catch (UnsupportedFlavorException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
