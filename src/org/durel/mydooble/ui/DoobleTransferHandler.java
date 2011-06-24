@@ -16,39 +16,32 @@ public class DoobleTransferHandler extends TransferHandler {
 	
 	static Logger log = Logger.getLogger("org.durel.mydooble");
 	
-	public static class Transferable implements java.awt.datatransfer.Transferable {
+	public static class TransferableImage implements java.awt.datatransfer.Transferable {
 		Image img;
 		
-		public Transferable(Image v) {
+		public TransferableImage(Image v) {
 			img = v;
 		}
 
 		@Override
 		public DataFlavor[] getTransferDataFlavors() {
-			// TODO Auto-generated method stub
-			log.info("getTransferDataFlavors");
-			return null;
+			DataFlavor f = new DataFlavor(Image.class, "Image");
+			return new DataFlavor[] { f };
 		}
 
 		@Override
 		public boolean isDataFlavorSupported(DataFlavor flavor) {
-			// TODO Auto-generated method stub
-			log.info("isDataFlavorSupported");
-			return false;
+			return flavor.getRepresentationClass() == Image.class;
 		}
 
 		@Override
 		public Object getTransferData(DataFlavor flavor)
 				throws UnsupportedFlavorException, IOException {
-			// TODO Auto-generated method stub
-			log.info("getTransferData");
-			return null;
+			if (flavor.getRepresentationClass() != Image.class)
+				throw new UnsupportedFlavorException(flavor);
+			return img;
 		}
 		
-	}
-	
-	public DoobleTransferHandler() {
-		log.info("DoobleTransferHandler");
 	}
 	
 	@Override
@@ -58,12 +51,11 @@ public class DoobleTransferHandler extends TransferHandler {
 	
 	@Override
 	protected java.awt.datatransfer.Transferable createTransferable(JComponent c) {
-		log.info("c: " + c);
 		JList l = (JList)c;
 		Object v = l.getSelectedValue();
-		log.info("v: " + v);
 		if (v instanceof DoobleListModel.Image) {
-			return new Transferable((DoobleListModel.Image)v);
+			log.info("create TransferableImage");
+			return new TransferableImage((DoobleListModel.Image)v);
 		}
 		return super.createTransferable(c);
 	}
