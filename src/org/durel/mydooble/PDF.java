@@ -2,7 +2,6 @@ package org.durel.mydooble;
 
 import java.io.IOException;
 
-import org.apache.fontbox.util.BoundingBox;
 import org.apache.pdfbox.exceptions.COSVisitorException;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.pdmodel.PDPage;

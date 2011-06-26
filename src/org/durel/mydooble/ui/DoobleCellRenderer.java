@@ -1,14 +1,12 @@
 package org.durel.mydooble.ui;
 
 import java.awt.Component;
-import java.awt.Dimension;
 import java.awt.image.BufferedImage;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.border.Border;
 
 public class DoobleCellRenderer extends DefaultListCellRenderer {
 	private static final long serialVersionUID = -8670403047283283045L;
