@@ -2,35 +2,37 @@ package org.durel.mydooble.ui;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
+import java.util.prefs.Preferences;
 
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 
-import org.durel.mydooble.ui.DoobleListModel.Image;
-
 public class DoobleListModel extends AbstractListModel {
-	
+
 	public static class Image {
 		BufferedImage picture;
 		String name;
-		
+
 		Image(BufferedImage i, String n) {
 			picture = i;
 			name = n;
 		}
-		
+
 		@Override
 		public String toString() {
 			return name;
 		}
 	}
-	
+
 	private static final long serialVersionUID = 3785607490873542718L;
 	static final int WIDTH = 32;
 	static final int HEIGHT = 32;
@@ -53,7 +55,8 @@ public class DoobleListModel extends AbstractListModel {
 			File input = new File(model.get(index));
 			try {
 				BufferedImage image = ImageIO.read(input);
-				BufferedImage resized = new BufferedImage(WIDTH, HEIGHT, BufferedImage.TYPE_INT_ARGB);
+				BufferedImage resized = new BufferedImage(WIDTH, HEIGHT,
+						BufferedImage.TYPE_INT_ARGB);
 				Graphics2D g = resized.createGraphics();
 				g.drawImage(image, 0, 0, WIDTH, HEIGHT, null);
 				g.dispose();
@@ -87,6 +90,37 @@ public class DoobleListModel extends AbstractListModel {
 		model.add(img.name);
 		cache.put(img.name, img);
 		fireIntervalAdded(this, index0, model.size());
+	}
+
+	public void init(ObjectInputStream i) throws IOException,
+			ClassNotFoundException {
+		@SuppressWarnings("unchecked")
+		ArrayList<String> readObject = (ArrayList<String>) i.readObject();
+		model = readObject;
+	}
+
+	public boolean save(Preferences prefs) {
+		ByteArrayOutputStream o = new ByteArrayOutputStream(model.size() * 24);
+		try {
+			ObjectOutputStream s = new ObjectOutputStream(o);
+			save(s);
+			prefs.putByteArray("labels", o.toByteArray());
+			prefs.flush();
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+
+	public boolean save(ObjectOutputStream o) {
+		try {
+			o.writeObject(model);
+			return true;
+		} catch (IOException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 
 }

@@ -15,11 +15,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.ObjectInputStream;
 import java.util.logging.ConsoleHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.prefs.BackingStoreException;
+import java.util.prefs.Preferences;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
@@ -57,7 +62,6 @@ public class MyDooble extends javax.swing.JFrame {
 	private JButton jButtonMake;
 	private JSpinner jSpinnerNbItems;
 	private JLabel jLabelNbItems;
-	private JSeparator jSeparator1;
 	private JLabel jLabelTo;
 	private JLabel jLabelFrom;
 	private JList jListFrom;
@@ -69,6 +73,8 @@ public class MyDooble extends javax.swing.JFrame {
 	protected DoobleListModel fromModel = new DoobleListModel();
 	protected DoobleListModel toModel = new DoobleListModel();
 	Logger log = Logger.getLogger("org.durel.mydooble");
+	
+	Preferences prefs = Preferences.userNodeForPackage(MyDooble.class);
 
 	/**
 	 * Auto-generated main method to display this JFrame
@@ -82,6 +88,8 @@ public class MyDooble extends javax.swing.JFrame {
 			}
 		});
 	}
+	
+	String lastDirectory = null;
 
 	public MyDooble() {
 		super();
@@ -94,6 +102,8 @@ public class MyDooble extends javax.swing.JFrame {
 		ConsoleHandler h = new ConsoleHandler();
 		h.setFormatter(new PlainFormatter());
 		log.addHandler(h);
+		
+		lastDirectory = prefs.get("lastDirectory", ".");
 	}
 
 	private void initGUI() {
@@ -106,6 +116,11 @@ public class MyDooble extends javax.swing.JFrame {
 			getContentPane().setLayout(thisLayout);
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent evt) {
+					try {
+						prefs.flush();
+					} catch (BackingStoreException e) {
+						e.printStackTrace();
+					}
 					System.exit(0);
 				}
 			});
@@ -311,8 +326,12 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	protected boolean registerNewLabel(String text) {
-		// TODO Auto-generated method stub
+		for (int i = 0; i < fromModel.model.size(); ++i) {
+			if (text == fromModel.model.get(i))
+				return false;
+		}
 		fromModel.add(text);
+		fromModel.save(prefs);
 		return true;
 	}
 
@@ -360,7 +379,17 @@ public class MyDooble extends javax.swing.JFrame {
 		toModel.isGlyph = false;
 		fromModel.clear();
 		toModel.clear();
-		// TODO
+		
+		byte labels[] = prefs.getByteArray("labels", new byte[0]);
+		if (labels.length > 0) {
+			InputStream s = new ByteArrayInputStream(labels);
+			try {
+				ObjectInputStream i = new ObjectInputStream(s);
+				fromModel.init(i);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
 	}
 
 	protected void doMake() {
@@ -394,10 +423,13 @@ public class MyDooble extends javax.swing.JFrame {
 
 	protected void chooseFile() {
 		JFileChooser chooser = new JFileChooser();
+		// TODO: use lastDirectory
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
+			lastDirectory = chooser.getSelectedFile().getAbsolutePath();
 			loadDir(chooser.getSelectedFile());
+			prefs.put("lastDirectory", lastDirectory);
 		}
 	}
 
