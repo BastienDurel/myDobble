@@ -196,29 +196,31 @@ public class MyDooble extends javax.swing.JFrame {
 				jListTo.setDropMode(DropMode.INSERT);
 				jListTo.setDropTarget(new DropTarget());
 				jListTo.getDropTarget().setActive(true);
-				jListTo.getDropTarget().addDropTargetListener(new DropTargetListener() {
-					
-					@Override
-					public void dropActionChanged(DropTargetDragEvent dtde) {
-					}
-					
-					@Override
-					public void drop(DropTargetDropEvent dtde) {
-						dropTo(dtde);
-					}
-					
-					@Override
-					public void dragOver(DropTargetDragEvent dtde) {
-					}
-					
-					@Override
-					public void dragExit(DropTargetEvent dte) {						
-					}
-					
-					@Override
-					public void dragEnter(DropTargetDragEvent dtde) {
-					}
-				});
+				jListTo.getDropTarget().addDropTargetListener(
+						new DropTargetListener() {
+
+							@Override
+							public void dropActionChanged(
+									DropTargetDragEvent dtde) {
+							}
+
+							@Override
+							public void drop(DropTargetDropEvent dtde) {
+								dropTo(dtde);
+							}
+
+							@Override
+							public void dragOver(DropTargetDragEvent dtde) {
+							}
+
+							@Override
+							public void dragExit(DropTargetEvent dte) {
+							}
+
+							@Override
+							public void dragEnter(DropTargetDragEvent dtde) {
+							}
+						});
 			}
 			{
 				jTextNewLabel = new JTextField();
@@ -228,6 +230,17 @@ public class MyDooble extends javax.swing.JFrame {
 								GridBagConstraints.CENTER,
 								GridBagConstraints.HORIZONTAL, new Insets(0, 0,
 										0, 0), 0, 0));
+				jTextNewLabel.addActionListener(new ActionListener() {
+
+					@Override
+					public void actionPerformed(ActionEvent e) {
+						if (jTextNewLabel.getText().length() > 0) {
+							if (registerNewLabel(jTextNewLabel.getText())) {
+								jTextNewLabel.setText("");
+							}
+						}
+					}
+				});
 			}
 			{
 				jButtonLoad = new JButton();
@@ -244,16 +257,6 @@ public class MyDooble extends javax.swing.JFrame {
 						chooseFile();
 					}
 				});
-			}
-			{
-				jSeparator1 = new JSeparator();
-				getContentPane().add(
-						jSeparator1,
-						new GridBagConstraints(0, 4, 2, 1, 0.0, 0.0,
-								GridBagConstraints.CENTER,
-								GridBagConstraints.HORIZONTAL, new Insets(0, 0,
-										0, 0), 0, 0));
-				jSeparator1.setPreferredSize(new java.awt.Dimension(378, 34));
 			}
 			{
 				jLabelNbItems = new JLabel();
@@ -301,14 +304,19 @@ public class MyDooble extends javax.swing.JFrame {
 					}
 				});
 			}
-			setSize(400, 300);
+			setSize(400, 400);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
 
-	protected void dropTo(DropTargetDropEvent dtde) {
+	protected boolean registerNewLabel(String text) {
 		// TODO Auto-generated method stub
+		fromModel.add(text);
+		return true;
+	}
+
+	protected void dropTo(DropTargetDropEvent dtde) {
 		log.info("drop: " + dtde);
 		Transferable t = dtde.getTransferable();
 		log.info("transferable: " + t + " (" + t.getClass() + ")");
@@ -318,6 +326,13 @@ public class MyDooble extends javax.swing.JFrame {
 			try {
 				Object transferData = t.getTransferData(f[i]);
 				log.info("-> " + f[i] + " -> " + transferData);
+				if (transferData instanceof DoobleListModel.Image) {
+					toModel.add((DoobleListModel.Image) transferData);
+				}
+				if (transferData instanceof String) {
+					toModel.add((String) transferData);
+				}
+				checkValid();
 			} catch (UnsupportedFlavorException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -331,7 +346,9 @@ public class MyDooble extends javax.swing.JFrame {
 		jButtonLoad.setEnabled(true);
 		core.reset();
 		fromModel.isGlyph = true;
+		toModel.isGlyph = true;
 		fromModel.clear();
+		toModel.clear();
 		// TODO
 	}
 
@@ -340,7 +357,9 @@ public class MyDooble extends javax.swing.JFrame {
 		jButtonLoad.setEnabled(false);
 		core.reset();
 		fromModel.isGlyph = false;
+		toModel.isGlyph = false;
 		fromModel.clear();
+		toModel.clear();
 		// TODO
 	}
 

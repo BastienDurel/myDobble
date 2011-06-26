@@ -12,6 +12,8 @@ import java.util.logging.Logger;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 
+import org.durel.mydooble.ui.DoobleListModel.Image;
+
 public class DoobleListModel extends AbstractListModel {
 	
 	public static class Image {
@@ -77,6 +79,13 @@ public class DoobleListModel extends AbstractListModel {
 	public void add(String string) {
 		int index0 = model.size();
 		model.add(string);
+		fireIntervalAdded(this, index0, model.size());
+	}
+
+	public void add(Image img) {
+		int index0 = model.size();
+		model.add(img.name);
+		cache.put(img.name, img);
 		fireIntervalAdded(this, index0, model.size());
 	}
 

@@ -16,6 +16,33 @@ public class DoobleTransferHandler extends TransferHandler {
 	
 	static Logger log = Logger.getLogger("org.durel.mydooble");
 	
+	public static class TransferableString implements java.awt.datatransfer.Transferable {
+		String str;
+		
+		TransferableString(String s) {
+			str = s;
+		}
+		
+		@Override
+		public DataFlavor[] getTransferDataFlavors() {
+			DataFlavor f = new DataFlavor(String.class, "String");
+			return new DataFlavor[] { f };
+		}
+
+		@Override
+		public boolean isDataFlavorSupported(DataFlavor flavor) {
+			return flavor.getRepresentationClass() == String.class;
+		}
+
+		@Override
+		public Object getTransferData(DataFlavor flavor)
+				throws UnsupportedFlavorException, IOException {
+			if (flavor.getRepresentationClass() != String.class)
+				throw new UnsupportedFlavorException(flavor);
+			return str;
+		}
+	}
+	
 	public static class TransferableImage implements java.awt.datatransfer.Transferable {
 		Image img;
 		
@@ -56,6 +83,10 @@ public class DoobleTransferHandler extends TransferHandler {
 		if (v instanceof DoobleListModel.Image) {
 			log.info("create TransferableImage");
 			return new TransferableImage((DoobleListModel.Image)v);
+		}
+		if (v instanceof String) {
+			log.info("create TransferableString");
+			return new TransferableString((String)v);
 		}
 		return super.createTransferable(c);
 	}

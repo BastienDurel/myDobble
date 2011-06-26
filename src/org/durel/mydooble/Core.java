@@ -60,7 +60,7 @@ public class Core {
 	public boolean isCoherent() {
 		if (itemStock.isEmpty())
 			return false;
-		return itemStock.size() * 2 % nbItems != 0;
+		return itemStock.size() * 2 % nbItems == 0;
 	}
 
 	static void print(List<Card> c) {
