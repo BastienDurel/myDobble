@@ -1,5 +1,24 @@
 package org.durel.mydooble.ui;
 
+/*
+  	Copyright © 2011 Bastien Durel
+
+    This file is part of myDobble.
+
+    myDobble is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    myDobble is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -80,9 +99,17 @@ public class MyDooble extends javax.swing.JFrame {
 	 * Auto-generated main method to display this JFrame
 	 */
 	public static void main(String[] args) {
+		final String[] fargs = args;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
-				MyDooble inst = new MyDooble();
+				Level log = Level.WARNING;
+				for (int i = 0; i < fargs.length; ++i) {
+					System.out.println("fargs[" + i + "]: " + fargs[i]);
+					if (fargs[i].equalsIgnoreCase("-d")) {
+						log = Level.INFO;
+					}
+				}
+				MyDooble inst = new MyDooble(log);
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
 			}
@@ -91,19 +118,24 @@ public class MyDooble extends javax.swing.JFrame {
 	
 	String lastDirectory = null;
 
-	public MyDooble() {
+	public MyDooble(Level loglvl) {
 		super();
 		initGUI();
 		checkValid();
 		selectText();
 
-		log.setLevel(Level.INFO);
+		inlitLog(loglvl);
+		
+		lastDirectory = prefs.get("lastDirectory", ".");
+	}
+
+	private void inlitLog(Level loglvl) {
+		log.setLevel(loglvl);
 		log.setUseParentHandlers(false);
 		ConsoleHandler h = new ConsoleHandler();
 		h.setFormatter(new PlainFormatter());
 		log.addHandler(h);
-		
-		lastDirectory = prefs.get("lastDirectory", ".");
+		log.info("Configured");
 	}
 
 	private void initGUI() {
