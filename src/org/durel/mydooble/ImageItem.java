@@ -57,7 +57,7 @@ public class ImageItem extends Item {
 			}
 
 			PDPageContentStream contentStream = new PDPageContentStream(
-					out.doc, out.page);
+					out.doc, out.page, true, false);
 			// TODO
 			float x = 20, y = 20;
 			contentStream.drawImage(ximage, x, y);

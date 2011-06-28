@@ -125,7 +125,7 @@ public class Core {
 			Card c = it.next();
 			c.toPDF(out);
 		}
-		out.save("/tmp/test.pdf");
+		out.save(file.getAbsolutePath());
 	}
 
 	private ArrayList<Card> subBuild() throws Exception {
