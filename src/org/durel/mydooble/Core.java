@@ -104,7 +104,7 @@ public class Core {
 	}
 
 	public void build(File file) throws Exception {
-		if (isCoherent())
+		if (!isCoherent())
 			throw new Exception("Incoherent stock");
 
 		List<Card> l = null;

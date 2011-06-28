@@ -50,6 +50,8 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import org.durel.mydooble.Core;
+import org.durel.mydooble.ImageItem;
+import org.durel.mydooble.TextItem;
 import org.durel.mydooble.Test.PlainFormatter;
 
 /**
@@ -104,7 +106,6 @@ public class MyDooble extends javax.swing.JFrame {
 			public void run() {
 				Level log = Level.WARNING;
 				for (int i = 0; i < fargs.length; ++i) {
-					System.out.println("fargs[" + i + "]: " + fargs[i]);
 					if (fargs[i].equalsIgnoreCase("-d")) {
 						log = Level.INFO;
 					}
@@ -378,10 +379,14 @@ public class MyDooble extends javax.swing.JFrame {
 				Object transferData = t.getTransferData(f[i]);
 				log.info("-> " + f[i] + " -> " + transferData);
 				if (transferData instanceof DoobleListModel.Image) {
-					toModel.add((DoobleListModel.Image) transferData);
+					DoobleListModel.Image item = (DoobleListModel.Image) transferData; 
+					toModel.add(item);
+					core.add(new ImageItem(lastDirectory + File.separator + item.name));
 				}
 				if (transferData instanceof String) {
-					toModel.add((String) transferData);
+					String item = (String) transferData;
+					toModel.add(item);
+					core.add(new TextItem(item));
 				}
 				checkValid();
 			} catch (UnsupportedFlavorException e) {
@@ -400,7 +405,7 @@ public class MyDooble extends javax.swing.JFrame {
 		toModel.isGlyph = true;
 		fromModel.clear();
 		toModel.clear();
-		// TODO
+		loadDir(new File(lastDirectory));
 	}
 
 	protected void selectText() {
@@ -455,7 +460,7 @@ public class MyDooble extends javax.swing.JFrame {
 
 	protected void chooseFile() {
 		JFileChooser chooser = new JFileChooser();
-		// TODO: use lastDirectory
+		chooser.setSelectedFile(new File(lastDirectory));
 		chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
 		int returnVal = chooser.showOpenDialog(this);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
