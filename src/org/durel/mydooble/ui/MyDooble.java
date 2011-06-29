@@ -149,12 +149,7 @@ public class MyDooble extends javax.swing.JFrame {
 			getContentPane().setLayout(thisLayout);
 			this.addWindowListener(new WindowAdapter() {
 				public void windowClosing(WindowEvent evt) {
-					try {
-						prefs.flush();
-					} catch (BackingStoreException e) {
-						e.printStackTrace();
-					}
-					System.exit(0);
+					doClose();
 				}
 			});
 			{
@@ -358,6 +353,16 @@ public class MyDooble extends javax.swing.JFrame {
 		}
 	}
 
+	protected void doClose() {
+		try {
+			prefs.put("lastDirectory", lastDirectory);
+			prefs.flush();
+		} catch (BackingStoreException e) {
+			e.printStackTrace();
+		}
+		this.dispose();	
+	}
+
 	protected boolean registerNewLabel(String text) {
 		for (int i = 0; i < fromModel.model.size(); ++i) {
 			if (text == fromModel.model.get(i))
@@ -466,7 +471,6 @@ public class MyDooble extends javax.swing.JFrame {
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			lastDirectory = chooser.getSelectedFile().getAbsolutePath();
 			loadDir(chooser.getSelectedFile());
-			prefs.put("lastDirectory", lastDirectory);
 		}
 	}
 

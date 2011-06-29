@@ -57,6 +57,7 @@ public class DoobleListModel extends AbstractListModel {
 	static final int HEIGHT = 32;
 	protected ArrayList<String> model = new ArrayList<String>();
 	protected Map<String, Image> cache = new HashMap<String, Image>();
+	Logger log = Logger.getLogger("org.durel.mydooble");
 
 	boolean isGlyph = false;
 
@@ -73,6 +74,7 @@ public class DoobleListModel extends AbstractListModel {
 				return cache.get(key);
 			File input = new File(model.get(index));
 			try {
+				log.info("Loading file " + input.getName());
 				BufferedImage image = ImageIO.read(input);
 				BufferedImage resized = new BufferedImage(WIDTH, HEIGHT,
 						BufferedImage.TYPE_INT_ARGB);
@@ -81,7 +83,7 @@ public class DoobleListModel extends AbstractListModel {
 				g.dispose();
 				cache.put(key, new Image(resized, input.getName()));
 				return cache.get(key);
-			} catch (IOException e) {
+			} catch (Exception e) {
 				Logger log = Logger.getLogger("org.durel.mydooble");
 				log.warning(e.getLocalizedMessage());
 				// e.printStackTrace();
@@ -95,7 +97,7 @@ public class DoobleListModel extends AbstractListModel {
 		int index0 = model.size();
 		model.clear();
 		cache.clear();
-		fireIntervalRemoved(this, index0, 0);
+		fireIntervalRemoved(this, 0, index0);
 	}
 
 	public void add(String string) {

@@ -33,14 +33,12 @@ public class DoobleCellRenderer extends DefaultListCellRenderer {
 	@Override
 	public Component getListCellRendererComponent(JList list, Object value,
 			int index, boolean isSelected, boolean cellHasFocus) {
+		JLabel j = (JLabel) super.getListCellRendererComponent(list, value,
+				index, isSelected, cellHasFocus);
 		if (value instanceof DoobleListModel.Image) {
 			BufferedImage img = ((DoobleListModel.Image) value).picture;
-			JLabel j = (JLabel) super.getListCellRendererComponent(list, value,
-					index, isSelected, cellHasFocus);
-			j.setIcon(new ImageIcon(img));			
-			return j;
+			j.setIcon(new ImageIcon(img));
 		}
-		return super.getListCellRendererComponent(list, value, index,
-				isSelected, cellHasFocus);
+		return j;
 	}
 }
