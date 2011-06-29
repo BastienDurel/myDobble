@@ -113,6 +113,11 @@ public class DoobleListModel extends AbstractListModel {
 		fireIntervalAdded(this, index0, model.size());
 	}
 
+	public void remove(int selectedIndex) {
+		model.remove(selectedIndex);
+		fireIntervalRemoved(this, selectedIndex, selectedIndex);
+	}
+
 	public void init(ObjectInputStream i) throws IOException,
 			ClassNotFoundException {
 		@SuppressWarnings("unchecked")

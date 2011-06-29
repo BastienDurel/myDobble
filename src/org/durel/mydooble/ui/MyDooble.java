@@ -32,6 +32,8 @@ import java.awt.dnd.DropTargetEvent;
 import java.awt.dnd.DropTargetListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.ByteArrayInputStream;
@@ -53,6 +55,7 @@ import org.durel.mydooble.Core;
 import org.durel.mydooble.ImageItem;
 import org.durel.mydooble.TextItem;
 import org.durel.mydooble.Test.PlainFormatter;
+import org.durel.mydooble.ui.DoobleListModel.Image;
 
 /**
  * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
@@ -223,6 +226,31 @@ public class MyDooble extends javax.swing.JFrame {
 				jListFrom.setCellRenderer(new DoobleCellRenderer());
 				jListFrom.setTransferHandler(new DoobleTransferHandler());
 				jListFrom.setDragEnabled(true);
+				jListFrom.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+						switch (e.getKeyChar()) {
+						case KeyEvent.VK_SPACE:
+						case KeyEvent.VK_ENTER:
+							addTo();
+							break;
+						case KeyEvent.VK_DELETE:
+							deleteFrom();
+							break;
+						default:
+							break;
+						}
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {						
+					}
+					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					}
+				});
 			}
 			{
 				jListTo = new JList();
@@ -239,6 +267,23 @@ public class MyDooble extends javax.swing.JFrame {
 				jListTo.setDropMode(DropMode.INSERT);
 				jListTo.setDropTarget(new DropTarget());
 				jListTo.getDropTarget().setActive(true);
+				jListTo.addKeyListener(new KeyListener() {
+					
+					@Override
+					public void keyTyped(KeyEvent e) {
+						if (e.getKeyChar() == KeyEvent.VK_DELETE) {
+							deleteTo();
+						}
+					}
+					
+					@Override
+					public void keyReleased(KeyEvent e) {						
+					}
+					
+					@Override
+					public void keyPressed(KeyEvent e) {
+					}
+				});
 				jListTo.getDropTarget().addDropTargetListener(
 						new DropTargetListener() {
 
@@ -353,6 +398,17 @@ public class MyDooble extends javax.swing.JFrame {
 		}
 	}
 
+	protected void deleteFrom() {
+		fromModel.remove(jListFrom.getSelectedIndex());
+		if (!fromModel.isGlyph) {
+			fromModel.save(prefs);
+		}
+	}
+
+	protected void deleteTo() {
+		toModel.remove(jListTo.getSelectedIndex());
+	}
+
 	protected void doClose() {
 		try {
 			prefs.put("lastDirectory", lastDirectory);
@@ -384,14 +440,10 @@ public class MyDooble extends javax.swing.JFrame {
 				Object transferData = t.getTransferData(f[i]);
 				log.info("-> " + f[i] + " -> " + transferData);
 				if (transferData instanceof DoobleListModel.Image) {
-					DoobleListModel.Image item = (DoobleListModel.Image) transferData; 
-					toModel.add(item);
-					core.add(new ImageItem(lastDirectory + File.separator + item.name));
+					addTo((DoobleListModel.Image) transferData);
 				}
 				if (transferData instanceof String) {
-					String item = (String) transferData;
-					toModel.add(item);
-					core.add(new TextItem(item));
+					addTo((String) transferData);
 				}
 				checkValid();
 			} catch (UnsupportedFlavorException e) {
@@ -400,6 +452,30 @@ public class MyDooble extends javax.swing.JFrame {
 				e.printStackTrace();
 			}
 		}
+	}
+
+	protected void addTo() {
+		Object o = fromModel.getElementAt(jListFrom.getSelectedIndex());
+		if (o instanceof Image) {
+			try {
+				addTo((Image)o);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		if (o instanceof String) {
+			addTo((String)o);
+		}
+	}
+
+	private void addTo(String item) {
+		toModel.add(item);
+		core.add(new TextItem(item));
+	}
+
+	private void addTo(Image item) throws IOException {
+		toModel.add(item);
+		core.add(new ImageItem(lastDirectory + File.separator + item.name));
 	}
 
 	protected void selectGlyph() {
