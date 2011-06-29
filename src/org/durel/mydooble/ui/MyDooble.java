@@ -1,24 +1,25 @@
 package org.durel.mydooble.ui;
 
 /*
-  	Copyright © 2011 Bastien Durel
+ Copyright © 2011 Bastien Durel
 
-    This file is part of myDobble.
+ This file is part of myDobble.
 
-    myDobble is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ myDobble is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    myDobble is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ myDobble is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+import java.awt.Cursor;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -97,7 +98,7 @@ public class MyDooble extends javax.swing.JFrame {
 	protected DoobleListModel fromModel = new DoobleListModel();
 	protected DoobleListModel toModel = new DoobleListModel();
 	Logger log = Logger.getLogger("org.durel.mydooble");
-	
+
 	Preferences prefs = Preferences.userNodeForPackage(MyDooble.class);
 
 	/**
@@ -119,7 +120,7 @@ public class MyDooble extends javax.swing.JFrame {
 			}
 		});
 	}
-	
+
 	String lastDirectory = null;
 
 	public MyDooble(Level loglvl) {
@@ -129,7 +130,8 @@ public class MyDooble extends javax.swing.JFrame {
 		selectText();
 
 		inlitLog(loglvl);
-		
+
+		// lastDirectory = ".";
 		lastDirectory = prefs.get("lastDirectory", ".");
 	}
 
@@ -227,7 +229,7 @@ public class MyDooble extends javax.swing.JFrame {
 				jListFrom.setTransferHandler(new DoobleTransferHandler());
 				jListFrom.setDragEnabled(true);
 				jListFrom.addKeyListener(new KeyListener() {
-					
+
 					@Override
 					public void keyTyped(KeyEvent e) {
 						switch (e.getKeyChar()) {
@@ -242,11 +244,11 @@ public class MyDooble extends javax.swing.JFrame {
 							break;
 						}
 					}
-					
+
 					@Override
-					public void keyReleased(KeyEvent e) {						
+					public void keyReleased(KeyEvent e) {
 					}
-					
+
 					@Override
 					public void keyPressed(KeyEvent e) {
 					}
@@ -268,18 +270,18 @@ public class MyDooble extends javax.swing.JFrame {
 				jListTo.setDropTarget(new DropTarget());
 				jListTo.getDropTarget().setActive(true);
 				jListTo.addKeyListener(new KeyListener() {
-					
+
 					@Override
 					public void keyTyped(KeyEvent e) {
 						if (e.getKeyChar() == KeyEvent.VK_DELETE) {
 							deleteTo();
 						}
 					}
-					
+
 					@Override
-					public void keyReleased(KeyEvent e) {						
+					public void keyReleased(KeyEvent e) {
 					}
-					
+
 					@Override
 					public void keyPressed(KeyEvent e) {
 					}
@@ -416,7 +418,7 @@ public class MyDooble extends javax.swing.JFrame {
 		} catch (BackingStoreException e) {
 			e.printStackTrace();
 		}
-		this.dispose();	
+		this.dispose();
 	}
 
 	protected boolean registerNewLabel(String text) {
@@ -458,13 +460,13 @@ public class MyDooble extends javax.swing.JFrame {
 		Object o = fromModel.getElementAt(jListFrom.getSelectedIndex());
 		if (o instanceof Image) {
 			try {
-				addTo((Image)o);
+				addTo((Image) o);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		if (o instanceof String) {
-			addTo((String)o);
+			addTo((String) o);
 		}
 	}
 
@@ -497,7 +499,7 @@ public class MyDooble extends javax.swing.JFrame {
 		toModel.isGlyph = false;
 		fromModel.clear();
 		toModel.clear();
-		
+
 		byte labels[] = prefs.getByteArray("labels", new byte[0]);
 		if (labels.length > 0) {
 			InputStream s = new ByteArrayInputStream(labels);
@@ -524,18 +526,25 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	protected void loadDir(File dir) {
-		String[] children = dir.list();
-		if (children != null) {
-			fromModel.clear();
-			for (int i = 0; i < children.length; ++i) {
-				if (children[i].toLowerCase().endsWith(".jpg")
-						|| children[i].toLowerCase().endsWith(".tiff")) {
-					String img = dir.getAbsolutePath() + File.separatorChar
-							+ children[i];
-					fromModel.add(img);
-					log.info(img);
+		Cursor old = getCursor();
+		try {
+			// TODO: on a thread ??
+			setCursor(new Cursor(Cursor.WAIT_CURSOR));
+			String[] children = dir.list();
+			if (children != null) {
+				fromModel.clear();
+				for (int i = 0; i < children.length; ++i) {
+					if (children[i].toLowerCase().endsWith(".jpg")
+							|| children[i].toLowerCase().endsWith(".tiff")) {
+						String img = dir.getAbsolutePath() + File.separatorChar
+								+ children[i];
+						fromModel.add(img);
+						log.info(img);
+					}
 				}
 			}
+		} finally {
+			setCursor(old);
 		}
 	}
 
