@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -101,12 +102,22 @@ public class DoobleListModel extends AbstractListModel {
 	}
 
 	public void add(String string) {
+		for (int i = 0; i < model.size(); ++i) {
+			if (model.get(i).equalsIgnoreCase(string)) {
+				log.warning("ignoring redondent entry");
+				return;
+			}
+		}
 		int index0 = model.size();
 		model.add(string);
 		fireIntervalAdded(this, index0, model.size());
 	}
 
 	public void add(Image img) {
+		if (cache.containsKey(img.name)) {
+			log.warning("ignoring redondent entry");
+			return;
+		}
 		int index0 = model.size();
 		model.add(img.name);
 		cache.put(img.name, img);
