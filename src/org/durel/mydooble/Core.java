@@ -1,22 +1,22 @@
 package org.durel.mydooble;
 
 /*
-  	Copyright © 2011 Bastien Durel
+ Copyright © 2011 Bastien Durel
 
-    This file is part of myDobble.
+ This file is part of myDobble.
 
-    myDobble is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ myDobble is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    myDobble is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ myDobble is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.io.File;
@@ -24,15 +24,15 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
-import java.util.Stack;
 import java.util.Vector;
 import java.util.logging.Logger;
 
 /**
- * @author bastien
+ * @author Bastien Durel
  * 
  */
 public class Core {
@@ -76,7 +76,12 @@ public class Core {
 	public boolean isCoherent() {
 		if (itemStock.isEmpty())
 			return false;
-		return itemStock.size() * 2 % nbItems == 0;
+		int lNbItemsReq = 0;
+		for (int i = 1; i <= nbItems; ++i) {
+			lNbItemsReq += i;
+		}
+		log.info(lNbItemsReq + " items needed");
+		return lNbItemsReq == itemStock.size();
 	}
 
 	static void print(List<Card> c) {
@@ -129,33 +134,32 @@ public class Core {
 	}
 
 	private ArrayList<Card> subBuild() throws Exception {
-		int nbCards = itemStock.size() * 2 / nbItems;
+		int nbCards = nbItems + 1;
 		ArrayList<Card> l = new ArrayList<Card>(nbCards);
-		ArrayList<Integer> k = new ArrayList<Integer>(nbCards);
 		for (int i = 0; i < nbCards; ++i) {
 			l.add(new Card(nbItems));
-			k.add(i);
 		}
-		Stack<Item> s = new Stack<Item>();
+		ArrayList<Item> s = new ArrayList<Item>();
 		for (int i = 0; i < itemStock.size(); ++i) {
-			s.push(itemStock.get(i));
+			s.add(itemStock.get(i));
 		}
-		while (s.size() > 0) {
-			if (k.size() == 1)
-				throw new Exception("Failed !");
-			int c = k.get(rnd.nextInt(k.size()));
-			int d;
-			do {
-				d = k.get(rnd.nextInt(k.size()));
-			} while (c == d);
-			log.info("got " + c + " and " + d);
-			l.get(c).add(s.peek());
-			l.get(d).add(s.pop());
-			if (l.get(c).isFull())
-				k.remove(new Integer(c));
-			if (l.get(d).isFull())
-				k.remove(new Integer(d));
+		Collections.shuffle(s);
+		int row;
+		int itc = 0;
+		for (row = 0; row < nbCards; ++row) {
+			Card curcard = l.get(row);
+			for (int col = row; col < nbItems; ++col) {
+				Item curit = s.get(itc++);
+				curcard.syms[col] = curit;
+				curcard.nb++;
+				Card secCard = l.get(col + 1);
+				secCard.syms[row] = curit;
+				secCard.nb++;
+				log.info("add item(" + curit + ") to [" + row + "][" + col
+						+ "] and [" + (col + 1) + "][" + row + "]");
+			}
 		}
+
 		print(l, new PrintStream(new LogWriter(log)));
 		return l;
 	}
@@ -163,7 +167,7 @@ public class Core {
 	public void reset() {
 		reset(nbItems);
 	}
-	
+
 	public void reset(int value) {
 		nbItems = value;
 		itemStock.clear();

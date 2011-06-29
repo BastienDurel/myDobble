@@ -1,0 +1,21 @@
+A B C
+A D E
+B D F
+C E F
+= 3 + 2 + 1 = 6
+
+A B C D
+A E F G
+B E H I
+C F H J
+D J F I
+= 4 + 3 + 2 + 1 + 0 = 10
+
+A B C D E F
+A G H I J K
+B G L M N O
+C H L P Q R
+D I M P S T
+E J N Q S U
+F K O R T U
+= 6 + 5 + 4 + 3 + 2 + 1 + 0 = 21

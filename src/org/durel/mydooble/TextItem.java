@@ -5,6 +5,7 @@ public class TextItem extends Item {
 	private String name;
 
 	public TextItem(String item) {
+		super();
 		name = item;
 	}
 
@@ -12,6 +13,11 @@ public class TextItem extends Item {
 	 * @return the name
 	 */
 	public String getName() {
+		return name;
+	}
+	
+	@Override
+	public String toString() {
 		return name;
 	}
 	
