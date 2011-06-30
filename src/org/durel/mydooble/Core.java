@@ -131,7 +131,7 @@ public class Core {
 					throw e;
 			}
 		} while (test < 15);
-		PDF out = new PDF();
+		PDF out = new PDF(nbItems);
 
 		ListIterator<Card> it = l.listIterator();
 		while (it.hasNext()) {

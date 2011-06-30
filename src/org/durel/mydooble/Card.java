@@ -56,6 +56,6 @@ class Card {
 			throw new IndexOutOfBoundsException("Card not full");
 		out.newCard();
 		for (int i = 0; i < nb; ++i)
-			syms[i].toPDF(out);
+			syms[i].toPDF(out, i);
 	}
 }

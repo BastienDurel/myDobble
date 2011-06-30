@@ -46,7 +46,7 @@ public class ImageItem extends Item {
 	}
 
 	@Override
-	public void toPDF(PDF out) {
+	public void toPDF(PDF out, int i) {
 		try {
 			PDXObjectImage ximage = null;
 			if (image.toLowerCase().endsWith(".jpg")) {
@@ -57,10 +57,15 @@ public class ImageItem extends Item {
 						image), "r"));
 			}
 
+			float h = (float) (out.cardBox.getHeight() / ((float)out.nbItems + 1.5));
+			float w = (float) (out.cardBox.getWidth() / ((float)out.nbItems + 1.5));
+			ximage.setHeight((int) (h * 72 / 2.54) - 5);
+			ximage.setWidth((int) (w * 72 / 2.54) - 5);
+
 			PDPageContentStream contentStream = new PDPageContentStream(
 					out.doc, out.page, true, false);
 			// TODO
-			float x = 20, y = 20;
+			float x = w * i, y = h * i;
 			contentStream.drawImage(ximage, x, y);
 			contentStream.close();
 		} catch (Exception e) {

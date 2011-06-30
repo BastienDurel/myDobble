@@ -1,5 +1,7 @@
 package org.durel.mydooble;
 
+import java.util.logging.Logger;
+
 /*
   	Copyright © 2011 Bastien Durel
 
@@ -21,6 +23,8 @@ package org.durel.mydooble;
 
 public class Item {
 	int id = getNextId();
+	
+	protected static Logger log = Logger.getLogger("org.durel.mydooble");
 
 	@Override
 	public String toString() {
@@ -36,7 +40,7 @@ public class Item {
 		return (o instanceof Item) && ((Item) o).id == id;
 	}
 	
-	public void toPDF(PDF out) {
+	public void toPDF(PDF out, int i) {
 	}
 
 	private static int lastId = 0;

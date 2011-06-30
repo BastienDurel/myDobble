@@ -89,14 +89,20 @@ public class Test {
 			e.printStackTrace();
 		}
 		*/
-		
+		/*
 		for (int i = 0; i < 57; ++i) t.add(new Item());
 		try {
 			t.multiBuild();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		
+		*/
+		for (int i = 0; i < 36; ++i) t.add(new TextItem("item " + i));
+		try {
+			t.build("/tmp/test.pdf");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 }
