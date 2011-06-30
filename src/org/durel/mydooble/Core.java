@@ -84,6 +84,13 @@ public class Core {
 		return lNbItemsReq == itemStock.size();
 	}
 
+	public boolean isCoherentMulti() {
+		if (itemStock.isEmpty())
+			return false;
+		int nbCards = 1 + (nbItems - 1) * nbItems;
+		return nbCards == itemStock.size();
+	}
+
 	static void print(List<Card> c) {
 		print(c, System.out);
 	}
@@ -93,11 +100,12 @@ public class Core {
 		while (it.hasNext()) {
 			StringBuilder str = new StringBuilder();
 			Card c = it.next();
+			str.append("(" + c.nb + ")");
 			for (int i = 0; i < c.nb; ++i) {
 				if (i > 0)
 					str.append(" - ");
 				else
-					str.append("(" + c.nb + ")|");
+					str.append("|");
 				str.append(c.syms[i]);
 			}
 			out.println(str);
@@ -160,6 +168,83 @@ public class Core {
 			}
 		}
 
+		print(l, new PrintStream(new LogWriter(log)));
+		return l;
+	}
+	
+	public void multiBuild() throws Exception {
+			subMultiBuild();
+	}
+	
+	private void putInCard(Card cur, ArrayList<Card> l, ArrayList<Item> s, int fromItem) throws Exception {
+		if (cur.isFull()) 
+			throw new Exception("full");
+		for (int i = fromItem; i < s.size(); ++i) {
+			Item it = s.get(i);
+			if (cur.have(it))
+				continue;
+			boolean bad = false;
+			for (int j = 0; j < cur.nb; ++j) {
+				Item sec = cur.syms[j];
+				for (int  k = 0; k < l.size(); ++k) {
+					Card cmp = l.get(k);
+					if (cmp.have(it) && cmp.have(sec)) {
+						bad = true;
+						break;
+					}
+				}
+				if (bad) 
+					break;
+			}
+			if (!bad) {
+				cur.add(it);
+				return;
+			}
+		}
+		throw new Exception("Not found");
+	}
+	
+	private ArrayList<Card> subMultiBuild() throws Exception {
+		if (!isCoherentMulti())
+			throw new Exception("Incoherent stock");
+			
+		int nbCards = 1 + (nbItems - 1) * nbItems;
+		ArrayList<Card> l = new ArrayList<Card>(nbCards);
+		for (int i = 0; i < nbCards; ++i) {
+			l.add(new Card(nbItems));
+		}
+		ArrayList<Item> s = new ArrayList<Item>();
+		for (int i = 0; i < itemStock.size(); ++i) {
+			s.add(itemStock.get(i));
+		}
+		//Collections.shuffle(s);
+		
+		// TODO
+		Item it = s.get(0);
+		int cnt = 1;
+		for (int i = 0; i < nbItems; ++i) {
+			Card cur = l.get(i);
+			cur.add(it);
+			while (cur.isFull() == false)
+				cur.add(s.get(cnt++));
+		}
+		try{
+		int row = nbItems;
+		for (int i = 1; i < nbItems; ++i) {
+			it = l.get(0).syms[i];
+			for (int j = 1; j < nbItems; ++j) {
+				Card cur = l.get(row++);
+				cur.add(it);
+				while (!cur.isFull()) {
+					putInCard(cur, l, s, nbItems);
+				}
+			}
+		}
+		}catch (Exception e) {
+			print(l, new PrintStream(new LogWriter(log)));
+			throw e;
+		}
+		
 		print(l, new PrintStream(new LogWriter(log)));
 		return l;
 	}

@@ -32,3 +32,14 @@ B E G
 C D G
 C E F
 = 7?
+
+abcdefgh
+A B C D
+A E F G
+A H I J
+B E H K
+B F I L
+C E I L
+C F J K
+D J L ?
+D ? ? ?

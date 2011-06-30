@@ -45,7 +45,7 @@ public class Test {
 		h.setFormatter(new PlainFormatter());
 		t.log.addHandler(h);
 		t.log.info("test ...");
-
+/*
 		t.add(new Item());
 		t.add(new Item());
 		t.add(new Item());
@@ -88,6 +88,15 @@ public class Test {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		*/
+		
+		for (int i = 0; i < 57; ++i) t.add(new Item());
+		try {
+			t.multiBuild();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 	}
 
 }

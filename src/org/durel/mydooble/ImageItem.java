@@ -33,6 +33,7 @@ public class ImageItem extends Item {
 	protected String image;
 
 	public ImageItem(String img) throws IOException {
+		super();
 		image = img;
 		if (!(image.toLowerCase().endsWith(".jpg"))
 				|| image.toLowerCase().endsWith(".tif")

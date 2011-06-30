@@ -35,6 +35,14 @@ class Card {
 		return false;
 	}
 
+	public boolean have(Item it) {
+		for (int i = 0; i < nb; ++i) {
+			if (syms[i].equals(it))
+				return true;
+		}
+		return false;
+	}
+
 	public void add(Item i) {
 		syms[nb++] = i;
 	}
