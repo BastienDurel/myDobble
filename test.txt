@@ -19,3 +19,16 @@ D I M P S T
 E J N Q S U
 F K O R T U
 = 6 + 5 + 4 + 3 + 2 + 1 + 0 = 21
+
+
+---
+pluri-répartition: 3x
+
+A B C
+A D E
+A F G
+B D F
+B E G
+C D G
+C E F
+= 7?
