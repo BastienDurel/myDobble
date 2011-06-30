@@ -527,25 +527,9 @@ public class MyDooble extends javax.swing.JFrame {
 
 	protected void loadDir(File dir) {
 		Cursor old = getCursor();
-		try {
-			// TODO: on a thread ??
-			setCursor(new Cursor(Cursor.WAIT_CURSOR));
-			String[] children = dir.list();
-			if (children != null) {
-				fromModel.clear();
-				for (int i = 0; i < children.length; ++i) {
-					if (children[i].toLowerCase().endsWith(".jpg")
-							|| children[i].toLowerCase().endsWith(".tiff")) {
-						String img = dir.getAbsolutePath() + File.separatorChar
-								+ children[i];
-						fromModel.add(img);
-						log.info(img);
-					}
-				}
-			}
-		} finally {
-			setCursor(old);
-		}
+		setCursor(new Cursor(Cursor.WAIT_CURSOR));
+		//SwingUtilities.invokeLater(new DobbleLoadDir(old, dir, this));
+		new Thread(new DobbleLoadDir(old, dir, this)).start();
 	}
 
 	protected void chooseFile() {

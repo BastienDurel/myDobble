@@ -27,7 +27,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;
@@ -137,7 +136,7 @@ public class DoobleListModel extends AbstractListModel {
 	}
 
 	public boolean save(Preferences prefs) {
-		ByteArrayOutputStream o = new ByteArrayOutputStream(model.size() * 24);
+		ByteArrayOutputStream o = new ByteArrayOutputStream(model.size() * 96);
 		try {
 			ObjectOutputStream s = new ObjectOutputStream(o);
 			save(s);
