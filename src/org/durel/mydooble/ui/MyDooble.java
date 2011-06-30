@@ -108,15 +108,20 @@ public class MyDooble extends javax.swing.JFrame {
 		final String[] fargs = args;
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
+				boolean about = false;
 				Level log = Level.WARNING;
 				for (int i = 0; i < fargs.length; ++i) {
 					if (fargs[i].equalsIgnoreCase("-d")) {
 						log = Level.INFO;
 					}
+					if (fargs[i].equalsIgnoreCase("-v")) {
+						about = true;
+					}
 				}
 				MyDooble inst = new MyDooble(log);
 				inst.setLocationRelativeTo(null);
 				inst.setVisible(true);
+				if (about) inst.about();
 			}
 		});
 	}
@@ -133,6 +138,8 @@ public class MyDooble extends javax.swing.JFrame {
 
 		// lastDirectory = ".";
 		lastDirectory = prefs.get("lastDirectory", ".");
+		boolean haveSeeNotice = prefs.getBoolean("haveSeeNotice", false);
+		if (!haveSeeNotice) about();
 	}
 
 	private void inlitLog(Level loglvl) {
@@ -395,6 +402,7 @@ public class MyDooble extends javax.swing.JFrame {
 				});
 			}
 			setSize(400, 400);
+			setTitle("myDobble");
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -545,6 +553,11 @@ public class MyDooble extends javax.swing.JFrame {
 
 	protected void checkValid() {
 		jButtonMake.setEnabled(core.isCoherent());
+	}
+	
+	public void about() {
+		new AboutBox(this).setVisible(true);
+		prefs.putBoolean("haveSeeNotice", true);
 	}
 
 }
