@@ -92,7 +92,6 @@ public class PDF {
 			float y[] = new float[] {y1, y2, y2, y1};
 			contentStream.drawPolygon(x, y);
 			contentStream.close();
-			System.out.println("x: " + x + " - y: " + y);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

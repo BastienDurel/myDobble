@@ -33,16 +33,17 @@ public class TextItem extends Item {
 		float w = out.cardBox.getWidth();
 		float x = out.cardBox.getLowerLeftX();
 		float y = out.cardBox.getLowerLeftY();
+		final int fontSize = 10;
 
 		try {
 			PDPageContentStream contentStream = new PDPageContentStream(
 					out.doc, out.page, true, false);
 			contentStream.setStrokingColor(Color.RED);
-			contentStream.setFont(PDType1Font.TIMES_ROMAN, 10);
-			float sw = (float) (PDType1Font.TIMES_ROMAN.getStringWidth(name) / 1000 * 72 / 2.54);
+			contentStream.setFont(PDType1Font.TIMES_ROMAN, fontSize);
+			float sw = (float) (PDType1Font.TIMES_ROMAN.getStringWidth(name) / 1000 * fontSize);
 			log.info("w: " + w + " - sw: " + sw);
 			contentStream.beginText();
-			contentStream.moveTextPositionByAmount(x + (w - sw) / 2, y + (k * (i + 1)));
+			contentStream.moveTextPositionByAmount(x + w / 2 - sw / 2, y + (k * (i + 1)));
 			contentStream.drawString(name);
 			contentStream.endText();
 			contentStream.close();
