@@ -29,6 +29,7 @@ public class TextItem extends Item {
 	
 	@Override
 	public void toPDF(PDF out, int i) {
+		super.toPDF(out, i);
 		float k = (float) (out.cardBox.getHeight() / ((float)out.nbItems + 1.5));
 		float w = out.cardBox.getWidth();
 		float x = out.cardBox.getLowerLeftX();

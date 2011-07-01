@@ -19,12 +19,8 @@ package org.durel.mydooble;
  along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Color;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -64,43 +60,13 @@ public class ImageItem extends Item {
 
 	@Override
 	public void toPDF(PDF out, int i) {
+		super.toPDF(out, i);
 		try {
 			PDXObjectImage ximage = null;
 			if (image.toLowerCase().endsWith(".jpg")) {
 				ximage = new PDJpeg(out.doc, new FileInputStream(image));
 			} else if (image.toLowerCase().endsWith(".tif") || image.toLowerCase().endsWith(".tiff")) {
 				ximage = new PDCcitt(out.doc, new RandomAccessFile(new File(image), "r"));
-			}
-
-			float bx = out.cardBox.getLowerLeftX();
-			float by = out.cardBox.getLowerLeftY();
-			float h = out.cardBox.getHeight();
-			float w = out.cardBox.getWidth();
-			float m = 0;
-			int r = i;
-			int c = 0;
-
-			if (out.nbItems <= 3) {
-				h /= out.nbItems;
-				m = out.MARGIN / (out.nbItems - 1);
-				h -= m;
-				w -= m;
-			} else if (out.nbItems <= 8) {
-				w /= 2;
-				m = out.MARGIN / (((int) (out.nbItems / 2)) - 1);
-				h /= (int) (out.nbItems / 2);
-				h -= m;
-				w -= m;
-				c = i % 2;
-				r = i / 2;
-			} else {
-				w /= 3;
-				m = out.MARGIN / (((int) (out.nbItems / 3)) - 1);
-				h /= (int) (out.nbItems / 3);
-				h -= m;
-				w -= m;
-				c = i % 3;
-				r = i / 3;
 			}
 
 			float ih = (float) (ximage.getHeight());
