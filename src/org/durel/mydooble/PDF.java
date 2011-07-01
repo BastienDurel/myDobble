@@ -77,8 +77,8 @@ public class PDF {
 		cardBox = new PDRectangle();
 		float x1 = col * (WIDTH + MARGIN) + MARGIN;
 		float x2 = (col + 1) * (WIDTH + MARGIN);
-		float y1 = (row + 1) * (HEIGHT + MARGIN);
-		float y2 = row * (HEIGHT + MARGIN) + MARGIN;
+		float y2 = (row + 1) * (HEIGHT + MARGIN);
+		float y1 = row * (HEIGHT + MARGIN) + MARGIN;
 		cardBox.setLowerLeftX(x1);
 		cardBox.setLowerLeftY(y1);
 		cardBox.setUpperRightX(x2);
