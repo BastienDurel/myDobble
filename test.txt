@@ -41,5 +41,17 @@ B E H K
 B F I L
 C E I L
 C F J K
-D J L ?
-D ? ? ?
+D G L J
+D K ? ?
+
+abcdefgh
+A B C D
+? ? ? ?
+A H K ?
+B E I ?
+B F J L
+C H ? ?
+C F K M
+D G J ?
+D I L ?
+
