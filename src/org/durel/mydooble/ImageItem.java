@@ -27,12 +27,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.apache.pdfbox.io.RandomAccessFile;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDCcitt;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDJpeg;
-import org.apache.pdfbox.pdmodel.graphics.xobject.PDXObjectImage;
-
 public class ImageItem extends Item {
 	protected String image;
 
@@ -60,7 +54,7 @@ public class ImageItem extends Item {
 
 	@Override
 	public void toPDF(PDF out, int i) {
-		super.toPDF(out, i);
+		super.toPDF(out, i);/*
 		try {
 			PDXObjectImage ximage = null;
 			if (image.toLowerCase().endsWith(".jpg")) {
@@ -96,6 +90,6 @@ public class ImageItem extends Item {
 			contentStream.close();
 		} catch (Exception e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 }

@@ -77,8 +77,8 @@ public class Item {
 	 * @param order order of item in card
 	 */
 	public void toPDF(PDF out, int order) {
-		bx = out.cardBox.getLowerLeftX();
-		by = out.cardBox.getLowerLeftY();
+		bx = out.cardBox.getLeft();
+		by = out.cardBox.getBottom();
 		h = out.cardBox.getHeight();
 		w = out.cardBox.getWidth();
 		m = 0;

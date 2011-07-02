@@ -2,6 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry exported="true" kind="lib" path="lib/pdfbox-app-1.5.0.jar" sourcepath="/home/bastien/projects/myDobble/lib/src/pdfbox-1.5.0/pdfbox/src/main/java"/>
+	<classpathentry kind="lib" path="lib/itextpdf-5.1.1.jar" sourcepath="lib/src/itextpdf-5.1.1-sources.jar">
+		<attributes>
+			<attribute name="javadoc_location" value="jar:platform:/resource/myDobble/lib/src/itextpdf-5.1.1-javadoc.jar!/"/>
+		</attributes>
+	</classpathentry>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

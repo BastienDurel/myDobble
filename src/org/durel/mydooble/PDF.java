@@ -19,19 +19,26 @@ package org.durel.mydooble;
     along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Color;
+import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
-import org.apache.pdfbox.exceptions.COSVisitorException;
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.pdmodel.PDPage;
-import org.apache.pdfbox.pdmodel.common.PDRectangle;
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfContentByte;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 public class PDF {
-	PDDocument doc = null;
-	PDPage page = null;
-	PDRectangle cardBox = null;
+	Document doc = null;
+	PdfWriter writer = null;
+	ByteArrayOutputStream buffer = null;
+	//PDPage page = null;
+	Rectangle cardBox = null;
 	int nbItems = 0;
 
 	private int col = 0;
@@ -40,15 +47,21 @@ public class PDF {
 	final float HEIGHT = (float) (8.5 * 72 / 2.54);
 	final float MARGIN = (float) (0.5 * 72 / 2.54);
 
-	public PDF(int nbItems) throws IOException {
-		doc = new PDDocument();
+	public PDF(int nbItems) throws IOException, DocumentException {
+		buffer = new ByteArrayOutputStream();
+		doc = new Document(PageSize.A4);
+		writer = PdfWriter.getInstance(doc, buffer);
 		this.nbItems = nbItems;
+		doc.open();
 	}
 	
 	public boolean save(String file) throws IOException {
 		try {
-			doc.save(file);
-		} catch (COSVisitorException e) {
+			doc.close();
+			writer.flush();
+			FileOutputStream fo = new FileOutputStream(file);
+			fo.write(buffer.toByteArray());
+		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -56,16 +69,14 @@ public class PDF {
 	}
 
 	public void newPage() {
-		page = new PDPage();
-		doc.addPage(page);
+		doc.newPage();
+		//page = new PDPage();
+		//doc.addPage(page);
 		col = 0;
 		row = 0;
 	}
 
 	public void newCard() {
-		if (page == null)
-			newPage();
-		else {
 			col++;
 			if (col > 2) {
 				col = 0;
@@ -73,26 +84,20 @@ public class PDF {
 				if (row > 2)
 					newPage();
 			}
-		}
-		cardBox = new PDRectangle();
 		float x1 = col * (WIDTH + MARGIN) + MARGIN;
 		float x2 = (col + 1) * (WIDTH + MARGIN);
 		float y2 = (row + 1) * (HEIGHT + MARGIN);
 		float y1 = row * (HEIGHT + MARGIN) + MARGIN;
-		cardBox.setLowerLeftX(x1);
-		cardBox.setLowerLeftY(y1);
-		cardBox.setUpperRightX(x2);
-		cardBox.setUpperRightY(y2);
-		page.setArtBox(cardBox);
+		cardBox = new Rectangle(x1, y1, x2, y2);
+		//page.setArtBox(cardBox);
 		try {
-			PDPageContentStream contentStream = new PDPageContentStream(
-					doc, page, true, false);
-			contentStream.setStrokingColor( Color.BLACK );
-			float x[] = new float[] {x1, x1, x2, x2};
-			float y[] = new float[] {y1, y2, y2, y1};
-			contentStream.drawPolygon(x, y);
-			contentStream.close();
-		} catch (IOException e) {
+			PdfContentByte cb = writer.getDirectContent();
+			//cb.saveState();
+			cb.setColorStroke(BaseColor.BLACK);
+			cb.setColorFill(BaseColor.RED);
+			cb.rectangle(cardBox);
+			//cb.restoreState();
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}

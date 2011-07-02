@@ -3,9 +3,6 @@ package org.durel.mydooble;
 import java.awt.Color;
 import java.io.IOException;
 
-import org.apache.pdfbox.pdmodel.edit.PDPageContentStream;
-import org.apache.pdfbox.pdmodel.font.PDType1Font;
-
 public class TextItem extends Item {
 
 	private String name;
@@ -30,6 +27,7 @@ public class TextItem extends Item {
 	@Override
 	public void toPDF(PDF out, int i) {
 		super.toPDF(out, i);
+		/*
 		float k = (float) (out.cardBox.getHeight() / ((float)out.nbItems + 1.5));
 		float w = out.cardBox.getWidth();
 		float x = out.cardBox.getLowerLeftX();
@@ -50,7 +48,7 @@ public class TextItem extends Item {
 			contentStream.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
+		}*/
 	}
 
 }
