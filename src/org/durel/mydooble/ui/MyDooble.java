@@ -446,7 +446,6 @@ public class MyDooble extends javax.swing.JFrame {
 				if (transferData instanceof String) {
 					addTo((String) transferData);
 				}
-				checkValid();
 			} catch (UnsupportedFlavorException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -467,16 +466,19 @@ public class MyDooble extends javax.swing.JFrame {
 		if (o instanceof String) {
 			addTo((String) o);
 		}
+		checkValid();
 	}
 
 	private void addTo(String item) {
 		toModel.add(item);
 		core.add(new TextItem(item));
+		checkValid();
 	}
 
 	private void addTo(Image item) throws IOException {
 		toModel.add(item);
 		core.add(new ImageItem(lastDirectory + File.separator + item.name));
+		checkValid();
 	}
 
 	protected void selectGlyph() {
