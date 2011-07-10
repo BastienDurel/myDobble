@@ -1,5 +1,6 @@
 package org.durel.mydooble;
 
+import com.itextpdf.text.Element;
 import com.itextpdf.text.pdf.PdfContentByte;
 
 public class TextItem extends Item {
@@ -28,14 +29,13 @@ public class TextItem extends Item {
 		COLS = 1;
 		super.toPDF(out, i);
 		
-		float x = bx + (c * (w + m)) + m;
-		float y = by + (r * (h + m)) + m;
-		// TODO: center: add (sw - w) / 2 to x
+		float x = bx + (c * (w + m)) + m + w / 2;
+		float y = by + (r * (h + m)) + m + h / 2;
 		
 		PdfContentByte cb = out.writer.getDirectContent();
 		cb.beginText();
 		cb.moveText(x, y);
-		cb.showText(name);
+		cb.showTextAligned(Element.ALIGN_CENTER, name, x, y, 0);
 		cb.endText();
 	}
 

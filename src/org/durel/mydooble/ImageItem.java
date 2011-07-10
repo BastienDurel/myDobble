@@ -66,7 +66,7 @@ public class ImageItem extends Item {
 			float x = bx + (c * (w + m)) + m;
 			float y = by + (r * (h + m)) + m;
 			img.setAbsolutePosition(x, y);
-			cb.addImage(img, true);
+			cb.addImage(img);
 		} catch (DocumentException e) {
 			e.printStackTrace();
 		} catch (MalformedURLException e) {
