@@ -22,16 +22,15 @@ package org.durel.mydooble;
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
 import com.itextpdf.text.DocumentException;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.BaseFont;
 import com.itextpdf.text.pdf.PdfContentByte;
 import com.itextpdf.text.pdf.PdfWriter;
-import com.sun.xml.internal.messaging.saaj.util.ByteOutputStream;
 
 public class PDF {
 	Document doc = null;
@@ -41,11 +40,13 @@ public class PDF {
 	Rectangle cardBox = null;
 	int nbItems = 0;
 
-	private int col = 0;
+	private int col = -1;
 	private int row = 0;
 	final float WIDTH = (float) (6 * 72 / 2.54);
 	final float HEIGHT = (float) (8.5 * 72 / 2.54);
 	final float MARGIN = (float) (0.5 * 72 / 2.54);
+	final BaseFont font = BaseFont.createFont();
+	final int FONT_SIZE = 12;
 
 	public PDF(int nbItems) throws IOException, DocumentException {
 		buffer = new ByteArrayOutputStream();
@@ -53,6 +54,9 @@ public class PDF {
 		writer = PdfWriter.getInstance(doc, buffer);
 		this.nbItems = nbItems;
 		doc.open();
+
+		PdfContentByte cb = writer.getDirectContent();
+		cb.setFontAndSize(font, FONT_SIZE);
 	}
 	
 	public boolean save(String file) throws IOException {
@@ -72,7 +76,7 @@ public class PDF {
 		doc.newPage();
 		//page = new PDPage();
 		//doc.addPage(page);
-		col = 0;
+		col = -1;
 		row = 0;
 	}
 
@@ -92,11 +96,12 @@ public class PDF {
 		//page.setArtBox(cardBox);
 		try {
 			PdfContentByte cb = writer.getDirectContent();
-			//cb.saveState();
+			cb.saveState();
+			cb.setLineWidth(5);
 			cb.setColorStroke(BaseColor.BLACK);
 			cb.setColorFill(BaseColor.RED);
 			cb.rectangle(cardBox);
-			//cb.restoreState();
+			cb.restoreState();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

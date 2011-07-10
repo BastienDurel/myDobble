@@ -89,8 +89,8 @@ public class Test {
 		int j = 0;
 		for (int i = 0; i < 21; ++i) {
 			try {
-				// t.add(new TextItem("item " + i));
-				t.add(new ImageItem(files[j++]));
+				t.add(new TextItem("item " + i));
+				//t.add(new ImageItem(files[j++]));
 				if (j == files.length)
 					j = 0;
 			} catch (Exception e) {

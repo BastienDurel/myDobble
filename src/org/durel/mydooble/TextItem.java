@@ -1,7 +1,6 @@
 package org.durel.mydooble;
 
-import java.awt.Color;
-import java.io.IOException;
+import com.itextpdf.text.pdf.PdfContentByte;
 
 public class TextItem extends Item {
 
@@ -18,37 +17,26 @@ public class TextItem extends Item {
 	public String getName() {
 		return name;
 	}
-	
+
 	@Override
 	public String toString() {
 		return name;
 	}
-	
+
 	@Override
 	public void toPDF(PDF out, int i) {
+		COLS = 1;
 		super.toPDF(out, i);
-		/*
-		float k = (float) (out.cardBox.getHeight() / ((float)out.nbItems + 1.5));
-		float w = out.cardBox.getWidth();
-		float x = out.cardBox.getLowerLeftX();
-		float y = out.cardBox.getLowerLeftY();
-		final int fontSize = 10;
-
-		try {
-			PDPageContentStream contentStream = new PDPageContentStream(
-					out.doc, out.page, true, false);
-			contentStream.setStrokingColor(Color.RED);
-			contentStream.setFont(PDType1Font.TIMES_ROMAN, fontSize);
-			float sw = (float) (PDType1Font.TIMES_ROMAN.getStringWidth(name) / 1000 * fontSize);
-			log.info("w: " + w + " - sw: " + sw);
-			contentStream.beginText();
-			contentStream.moveTextPositionByAmount(x + w / 2 - sw / 2, y + (k * (i + 1)));
-			contentStream.drawString(name);
-			contentStream.endText();
-			contentStream.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}*/
+		
+		float x = bx + (c * (w + m)) + m;
+		float y = by + (r * (h + m)) + m;
+		// TODO: center: add (sw - w) / 2 to x
+		
+		PdfContentByte cb = out.writer.getDirectContent();
+		cb.beginText();
+		cb.moveText(x, y);
+		cb.showText(name);
+		cb.endText();
 	}
 
 }

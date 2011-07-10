@@ -24,6 +24,8 @@ import java.util.logging.Logger;
 public class Item {
 	int id = getNextId();
 	
+	protected int COLS = -1;
+	
 	protected static Logger log = Logger.getLogger("org.durel.mydooble");
 
 	@Override
@@ -84,13 +86,19 @@ public class Item {
 		m = 0;
 		r = order;
 		c = 0;
+		
+		if (COLS < 0) {
+			if (out.nbItems <= 3) COLS = 1;
+			else if (out.nbItems <= 8) COLS = 2;
+			else if (out.nbItems <= 8) COLS = 3;
+		}
 
-		if (out.nbItems <= 3) {
+		if (COLS == 1) {
 			h /= out.nbItems;
 			m = out.MARGIN / (out.nbItems - 1);
 			h -= m;
 			w -= m;
-		} else if (out.nbItems <= 8) {
+		} else if (COLS == 2) {
 			w /= 2;
 			m = out.MARGIN / (((int) (out.nbItems / 2)) - 1);
 			h /= (int) (out.nbItems / 2);
@@ -98,7 +106,7 @@ public class Item {
 			w -= m;
 			c = order % 2;
 			r = order / 2;
-		} else {
+		} else if (COLS == 3) {
 			w /= 3;
 			m = out.MARGIN / (((int) (out.nbItems / 3)) - 1);
 			h /= (int) (out.nbItems / 3);
@@ -106,6 +114,8 @@ public class Item {
 			w -= m;
 			c = order % 3;
 			r = order / 3;
+		} else {
+			throw new RuntimeException("invalid COLS: " + COLS);
 		}
 	}
 
