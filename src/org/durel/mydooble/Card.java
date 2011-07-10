@@ -1,5 +1,8 @@
 package org.durel.mydooble;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 /*
   	Copyright © 2011 Bastien Durel
 
@@ -55,7 +58,11 @@ class Card {
 		if (!isFull())
 			throw new IndexOutOfBoundsException("Card not full");
 		out.newCard();
+		ArrayList<Item> cnt = new ArrayList<Item>(nb);
 		for (int i = 0; i < nb; ++i)
-			syms[i].toPDF(out, i);
+			cnt.add(syms[i]);
+		Collections.shuffle(cnt);
+		for (int i = 0; i < nb; ++i)
+			cnt.get(i).toPDF(out, i);
 	}
 }
