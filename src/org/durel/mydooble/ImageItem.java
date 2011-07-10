@@ -19,12 +19,13 @@ package org.durel.mydooble;
  along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.awt.Graphics2D;
-import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.MalformedURLException;
 
-import javax.imageio.ImageIO;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Image;
+import com.itextpdf.text.pdf.PdfContentByte;
 
 public class ImageItem extends Item {
 	protected String image;
@@ -32,7 +33,8 @@ public class ImageItem extends Item {
 	public ImageItem(String img) throws IOException {
 		super();
 		image = img;
-		if (!(image.toLowerCase().endsWith(".jpg")) || image.toLowerCase().endsWith(".tif")
+		if (!(image.toLowerCase().endsWith(".jpg"))
+				|| image.toLowerCase().endsWith(".tif")
 				|| image.toLowerCase().endsWith(".tiff")) {
 			throw new IOException("Image type not supported:" + image);
 		} else {
@@ -41,54 +43,36 @@ public class ImageItem extends Item {
 		}
 	}
 
-	private static BufferedImage resizeImage(BufferedImage originalImage, int w, int h) {
-		BufferedImage resizedImage = new BufferedImage(w, h,
-				originalImage.getType() == 0 ? BufferedImage.TYPE_INT_ARGB : originalImage.getType());
-		Graphics2D g = resizedImage.createGraphics();
-		g.drawImage(originalImage, 0, 0, w, h, null);
-		g.dispose();
-
-		return resizedImage;
-	}
-
 	@Override
 	public void toPDF(PDF out, int i) {
-		super.toPDF(out, i);/*
-		try {
-			PDXObjectImage ximage = null;
-			if (image.toLowerCase().endsWith(".jpg")) {
-				ximage = new PDJpeg(out.doc, new FileInputStream(image));
-			} else if (image.toLowerCase().endsWith(".tif") || image.toLowerCase().endsWith(".tiff")) {
-				ximage = new PDCcitt(out.doc, new RandomAccessFile(new File(image), "r"));
-			}
+		super.toPDF(out, i);
 
-			float ih = (float) (ximage.getHeight());
-			float iw = (float) (ximage.getWidth());
+		try {
+			Image img = Image.getInstance(image);
+			float ih = (float) (img.getHeight());
+			float iw = (float) (img.getWidth());
 			if (ih > h || iw > w) {
 				float xratio = iw / w;
 				float yratio = ih / h;
 				float ratio = Math.max(xratio, yratio);
-				log.info("ih: " + ih + " - iw: " + iw + " - xratio: " + xratio + " - yratio: " + yratio
-						+ " - ratio: " + ratio + " --> " + (int) (iw / ratio) + "x" + (int) (ih / ratio));
-				BufferedImage tmp = resizeImage(ximage.getRGBImage(), (int) (iw / ratio),
-						(int) (ih / ratio));
-				File temp = File.createTempFile("tmpfile", ".jpg");
-				ImageIO.write(tmp, "jpg", temp);
-				ximage = new PDJpeg(out.doc, new FileInputStream(temp));
-				temp.delete();
+				log.info("ih: " + ih + " - iw: " + iw + " - xratio: " + xratio
+						+ " - yratio: " + yratio + " - ratio: " + ratio
+						+ " --> " + (int) (iw / ratio) + "x"
+						+ (int) (ih / ratio));
+				img.scalePercent(100 / ratio);
 			}
 
-			PDPageContentStream contentStream = new PDPageContentStream(out.doc, out.page, true, false);
-			float x = (w + m) * c + bx + m / 2, y = (h + m) * r + by + m / 2;
-			// contentStream.setNonStrokingColor(Color.RED);
-			// contentStream.fillRect(x, y, w, h);
-			x += (w - ximage.getWidth()) / 2;
-			y += (h - ximage.getHeight()) / 2;
-			contentStream.drawImage(ximage, x, y);
-			log.info("x: " + x + " - y: " + y + " w: " + w + " - h: " + h);
-			contentStream.close();
-		} catch (Exception e) {
+			PdfContentByte cb = out.writer.getDirectContent();
+			float x = bx + (c * (w + m)) + m;
+			float y = by + (r * (h + m)) + m;
+			img.setAbsolutePosition(x, y);
+			cb.addImage(img, true);
+		} catch (DocumentException e) {
 			e.printStackTrace();
-		}*/
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }

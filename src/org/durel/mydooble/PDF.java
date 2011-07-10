@@ -42,8 +42,8 @@ public class PDF {
 
 	private int col = -1;
 	private int row = 0;
-	final float WIDTH = (float) (6 * 72 / 2.54);
-	final float HEIGHT = (float) (8.5 * 72 / 2.54);
+	final float WIDTH = (float) (6.3 * 72 / 2.54);
+	final float HEIGHT = (float) (9.25 * 72 / 2.54);
 	final float MARGIN = (float) (0.5 * 72 / 2.54);
 	final BaseFont font = BaseFont.createFont();
 	final int FONT_SIZE = 12;
@@ -52,6 +52,7 @@ public class PDF {
 		buffer = new ByteArrayOutputStream();
 		doc = new Document(PageSize.A4);
 		writer = PdfWriter.getInstance(doc, buffer);
+		writer.setCompressionLevel(0);
 		this.nbItems = nbItems;
 		doc.open();
 
@@ -93,14 +94,14 @@ public class PDF {
 		float y2 = (row + 1) * (HEIGHT + MARGIN);
 		float y1 = row * (HEIGHT + MARGIN) + MARGIN;
 		cardBox = new Rectangle(x1, y1, x2, y2);
-		//page.setArtBox(cardBox);
 		try {
 			PdfContentByte cb = writer.getDirectContent();
 			cb.saveState();
-			cb.setLineWidth(5);
-			cb.setColorStroke(BaseColor.BLACK);
-			cb.setColorFill(BaseColor.RED);
+			cardBox.setBorderWidth(1.2f);
+			cardBox.setBorderColor(BaseColor.BLACK);
+			cardBox.setBorder(Rectangle.BOX);
 			cb.rectangle(cardBox);
+			cb.stroke();
 			cb.restoreState();
 		} catch (Exception e) {
 			e.printStackTrace();

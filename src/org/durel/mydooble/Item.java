@@ -93,27 +93,31 @@ public class Item {
 			else if (out.nbItems <= 8) COLS = 3;
 		}
 
+		int nvm = COLS + 1;
 		if (COLS == 1) {
+			int nhr = (out.nbItems + 1);
+			m = out.MARGIN / Math.max(nhr, nvm);
+			h -= m * nhr;
+			w -= m * nvm;
 			h /= out.nbItems;
-			m = out.MARGIN / (out.nbItems - 1);
-			h -= m;
-			w -= m;
 		} else if (COLS == 2) {
-			w /= 2;
-			m = out.MARGIN / (((int) (out.nbItems / 2)) - 1);
-			h /= (int) (out.nbItems / 2);
-			h -= m;
-			w -= m;
+			int nhr = (out.nbItems / 2) + 1;
+			m = out.MARGIN / Math.max(nhr, nvm);
+			h -= m * nhr;
+			w -= m * nvm;
 			c = order % 2;
 			r = order / 2;
+			w /= 2;
+			h /= (int) (out.nbItems / 2);
 		} else if (COLS == 3) {
-			w /= 3;
-			m = out.MARGIN / (((int) (out.nbItems / 3)) - 1);
-			h /= (int) (out.nbItems / 3);
-			h -= m;
-			w -= m;
+			int nhr = (out.nbItems / 3) + 1;
+			m = out.MARGIN / Math.max(nhr, nvm);
+			h -= m * nhr;
+			w -= m * nvm;
 			c = order % 3;
 			r = order / 3;
+			w /= 3;
+			h /= (int) (out.nbItems / 3);
 		} else {
 			throw new RuntimeException("invalid COLS: " + COLS);
 		}
