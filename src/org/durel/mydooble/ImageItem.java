@@ -49,6 +49,8 @@ public class ImageItem extends Item {
 
 		try {
 			Image img = Image.getInstance(image);
+			img.setDpi(288, 288);
+			img.setInterpolation(true);
 			float ih = (float) (img.getHeight());
 			float iw = (float) (img.getWidth());
 			if (ih > h || iw > w) {
