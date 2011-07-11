@@ -11,6 +11,22 @@ public class TextItem extends Item {
 		super();
 		name = item;
 	}
+	
+	@Override
+	boolean equals(Item i) {
+		if (i instanceof TextItem) {
+			return ((TextItem)i).name.contentEquals(name);
+		}
+		return super.equals(i);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof TextItem) {
+			return ((TextItem)o).name.contentEquals(name);
+		}
+		return super.equals(o);
+	}
 
 	/**
 	 * @return the name

@@ -25,9 +25,10 @@
 	<property name="debuglevel" value="source,lines,vars" />
 	<property name="target" value="1.6" />
 	<property name="source" value="1.6" />
+	<property name="libpdf" value="lib/itextpdf-5.1.1.jar" />
 	<path id="myDobble.classpath">
 		<pathelement location="bin" />
-		<pathelement location="lib/pdfbox-app-1.5.0.jar" />
+		<pathelement location="${libpdf}" />
 	</path>
 	<target name="init">
 		<mkdir dir="bin" />
@@ -69,7 +70,9 @@
 
 	<target name="jar" depends="build">
 		<jar destfile="binaries/myDobble.jar" basedir="bin">
-			<zipfileset includes="**/*.class" src="lib/pdfbox-app-1.5.0.jar" />
+			<zipfileset includes="**/*.class" src="${libpdf}" />
+			<zipfileset includes="**/*.afm" src="${libpdf}" />
+			<zipfileset includes="**/*.txt" src="${libpdf}" />
 			<fileset file="gpl.txt"></fileset>
 			<manifest>
 				<attribute name="Main-Class" value="org.durel.mydooble.ui.MyDooble" />

@@ -42,6 +42,22 @@ public class ImageItem extends Item {
 			new FileInputStream(image);
 		}
 	}
+	
+	@Override
+	boolean equals(Item i) {
+		if (i instanceof ImageItem) {
+			return ((ImageItem)i).image.contentEquals(image);
+		}
+		return super.equals(i);
+	}
+	
+	@Override
+	public boolean equals(Object o) {
+		if (o instanceof ImageItem) {
+			return ((ImageItem)o).image.contentEquals(image);
+		}
+		return super.equals(o);
+	}
 
 	@Override
 	public void toPDF(PDF out, int i) {

@@ -80,7 +80,7 @@ public class Core {
 		for (int i = 1; i <= nbItems; ++i) {
 			lNbItemsReq += i;
 		}
-		log.info(lNbItemsReq + " items needed");
+		log.info(lNbItemsReq + " items needed (have " + itemStock.size() + ")");
 		return lNbItemsReq == itemStock.size();
 	}
 
@@ -256,5 +256,14 @@ public class Core {
 	public void reset(int value) {
 		nbItems = value;
 		itemStock.clear();
+	}
+
+	public void remove(Item item) {
+		for (int i = 0; i < itemStock.size(); ++i) {
+			if (item.equals(itemStock.get(i))) {
+				itemStock.remove(i);
+				break;
+			}
+		}
 	}
 }

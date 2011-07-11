@@ -87,7 +87,7 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	private static final long serialVersionUID = -3231189728332798370L;
-	private static final String version = "1.0 rc1";
+	private static final String version = "1.0 rc2";
 
 	private JList jListTo;
 
@@ -444,7 +444,22 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	protected void deleteTo() {
+		Object o = toModel.getElementAt(jListTo.getSelectedIndex());
+		if (o instanceof Image) {
+			try {
+				String file = lastDirectory + File.separator + ((Image) o).name;
+				core.remove(new ImageItem(file));
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else if (o instanceof String) {
+			core.remove(new TextItem((String) o));
+		}
+		else 
+			log.info("cannot remove element ?");
 		toModel.remove(jListTo.getSelectedIndex());
+		checkValid();
 	}
 
 	protected void doClose() {
