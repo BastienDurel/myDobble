@@ -72,14 +72,27 @@ public class Core {
 	public void add(Item i) {
 		itemStock.add(i);
 	}
-
-	public boolean isCoherent() {
-		if (itemStock.isEmpty())
-			return false;
+	
+	public int getNbItemsReq() {
 		int lNbItemsReq = 0;
 		for (int i = 1; i <= nbItems; ++i) {
 			lNbItemsReq += i;
 		}
+		return lNbItemsReq;
+	}
+	
+	public int getNbItemsReq(int m) {
+		if (m == 2)
+			return getNbItemsReq();
+		if (m < 2)
+			throw new IndexOutOfBoundsException();
+		return 0;
+	}
+
+	public boolean isCoherent() {
+		if (itemStock.isEmpty())
+			return false;
+		int lNbItemsReq = getNbItemsReq();
 		log.info(lNbItemsReq + " items needed (have " + itemStock.size() + ")");
 		return lNbItemsReq == itemStock.size();
 	}

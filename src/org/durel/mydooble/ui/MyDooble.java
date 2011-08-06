@@ -58,28 +58,16 @@ import org.durel.mydooble.TextItem;
 import org.durel.mydooble.Test.PlainFormatter;
 import org.durel.mydooble.ui.DoobleListModel.Image;
 
-/**
- * This code was edited or generated using CloudGarden's Jigloo SWT/Swing GUI
- * Builder, which is free for non-commercial use. If Jigloo is being used
- * commercially (ie, by a corporation, company or business for any purpose
- * whatever) then you should purchase a license for each developer using Jigloo.
- * Please visit www.cloudgarden.com for details. Use of Jigloo implies
- * acceptance of these licensing terms. A COMMERCIAL LICENSE HAS NOT BEEN
- * PURCHASED FOR THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED LEGALLY FOR
- * ANY CORPORATE OR COMMERCIAL PURPOSE.
- */
 public class MyDooble extends javax.swing.JFrame {
 
 	{
 		// Set Look & Feel
 		final String lookAndFeels[] = {
 				"com.sun.java.swing.plaf.gtk.GTKLookAndFeel",
-				"com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel"
-		};
+				"com.sun.java.swing.plaf.windows.WindowsClassicLookAndFeel" };
 		for (int i = 0; i < lookAndFeels.length; ++i)
 			try {
-				javax.swing.UIManager
-						.setLookAndFeel(lookAndFeels[i]);
+				javax.swing.UIManager.setLookAndFeel(lookAndFeels[i]);
 				break;
 			} catch (Exception e) {
 				// Ignore it
@@ -87,7 +75,7 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	private static final long serialVersionUID = -3231189728332798370L;
-	private static final String version = "1.0 rc2";
+	private static final String version = "1.0 rc3";
 
 	private JList jListTo;
 
@@ -154,6 +142,7 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	String lastDirectory = null;
+	private JStatusBar jLabelStatusBar;
 
 	public MyDooble(Level loglvl) {
 		super();
@@ -182,8 +171,8 @@ public class MyDooble extends javax.swing.JFrame {
 	private void initGUI() {
 		try {
 			GridBagLayout thisLayout = new GridBagLayout();
-			thisLayout.rowWeights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
-			thisLayout.rowHeights = new int[] { 7, 7, 7, 7, 7, 7 };
+			thisLayout.rowWeights = new double[] { 0.1, 0.1, 0.1, 0.1, 0.1, 0.1, 0.1 };
+			thisLayout.rowHeights = new int[] { 7, 7, 7, 7, 7, 7, 7 };
 			thisLayout.columnWeights = new double[] { 0.1, 0.1 };
 			thisLayout.columnWidths = new int[] { 7, 7 };
 			getContentPane().setLayout(thisLayout);
@@ -199,7 +188,7 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(0, 0, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST,
 								GridBagConstraints.NONE,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 5), 0, 0));
 				jRadioText.setLayout(null);
 				jRadioText.setText("Texte");
 				jRadioText.setSelected(true);
@@ -219,7 +208,7 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(1, 0, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST,
 								GridBagConstraints.NONE,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 0), 0, 0));
 				jRadioGlyph.setText("Images");
 				jRadioGlyph.addActionListener(new ActionListener() {
 					@Override
@@ -236,7 +225,7 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(0, 1, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST,
 								GridBagConstraints.NONE,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 5), 0, 0));
 				jLabelFrom.setText("À ajouter");
 			}
 			{
@@ -246,7 +235,7 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(1, 1, 1, 1, 0.0, 0.0,
 								GridBagConstraints.WEST,
 								GridBagConstraints.NONE,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 0), 0, 0));
 				jLabelTo.setText("Sélectionnés");
 			}
 			{
@@ -258,7 +247,7 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(0, 2, 1, 1, 0.0, 10.0,
 								GridBagConstraints.CENTER,
 								GridBagConstraints.BOTH,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 5), 0, 0));
 				jListFrom.setModel(fromModel);
 				jListFrom.setCellRenderer(new DoobleCellRenderer());
 				jListFrom.setTransferHandler(new DoobleTransferHandler());
@@ -298,7 +287,7 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(1, 2, 1, 1, 0.0, 10.0,
 								GridBagConstraints.CENTER,
 								GridBagConstraints.BOTH,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 0), 0, 0));
 				jListTo.setModel(toModel);
 				jListTo.setCellRenderer(new DoobleCellRenderer());
 				jListTo.setDropMode(DropMode.INSERT);
@@ -353,8 +342,7 @@ public class MyDooble extends javax.swing.JFrame {
 						jTextNewLabel,
 						new GridBagConstraints(0, 3, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER,
-								GridBagConstraints.HORIZONTAL, new Insets(0, 0,
-										0, 0), 0, 0));
+								GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 5), 0, 0));
 				jTextNewLabel.addActionListener(new ActionListener() {
 
 					@Override
@@ -373,8 +361,7 @@ public class MyDooble extends javax.swing.JFrame {
 						jButtonLoad,
 						new GridBagConstraints(1, 3, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER,
-								GridBagConstraints.HORIZONTAL, new Insets(0, 0,
-										0, 0), 0, 0));
+								GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 0), 0, 0));
 				jButtonLoad.setText("...");
 				jButtonLoad.addActionListener(new ActionListener() {
 					@Override
@@ -390,7 +377,7 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(0, 4, 1, 1, 0.0, 0.0,
 								GridBagConstraints.EAST,
 								GridBagConstraints.NONE,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 5), 0, 0));
 				jLabelNbItems.setText("Nombre d'éléments par carte");
 			}
 			{
@@ -401,8 +388,7 @@ public class MyDooble extends javax.swing.JFrame {
 						jSpinnerNbItems,
 						new GridBagConstraints(1, 4, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER,
-								GridBagConstraints.HORIZONTAL, new Insets(0, 0,
-										0, 0), 0, 0));
+								GridBagConstraints.HORIZONTAL, new Insets(0, 0, 5, 0), 0, 0));
 				jSpinnerNbItems.setModel(jSpinnerNbItemsModel);
 				jSpinnerNbItems.addChangeListener(new ChangeListener() {
 					@Override
@@ -419,8 +405,21 @@ public class MyDooble extends javax.swing.JFrame {
 						new GridBagConstraints(1, 5, 1, 1, 0.0, 0.0,
 								GridBagConstraints.CENTER,
 								GridBagConstraints.NONE,
-								new Insets(0, 0, 0, 0), 0, 0));
+								new Insets(0, 0, 5, 0), 0, 0));
 				jButtonMake.setText("Générer");
+				{
+					jLabelStatusBar = new JStatusBar();
+					jLabelStatusBar.setHorizontalAlignment(SwingConstants.RIGHT);
+					GridBagConstraints gbc_jLabelStatusBar = new GridBagConstraints();
+					gbc_jLabelStatusBar.weighty = 0.1;
+					gbc_jLabelStatusBar.weightx = 0.1;
+					gbc_jLabelStatusBar.fill = GridBagConstraints.HORIZONTAL;
+					gbc_jLabelStatusBar.gridwidth = 2;
+					gbc_jLabelStatusBar.insets = new Insets(0, 0, 0, 5);
+					gbc_jLabelStatusBar.gridx = 0;
+					gbc_jLabelStatusBar.gridy = 6;
+					getContentPane().add(jLabelStatusBar, gbc_jLabelStatusBar);
+				}
 				jButtonMake.addActionListener(new ActionListener() {
 
 					@Override
@@ -452,11 +451,9 @@ public class MyDooble extends javax.swing.JFrame {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-		}
-		else if (o instanceof String) {
+		} else if (o instanceof String) {
 			core.remove(new TextItem((String) o));
-		}
-		else 
+		} else
 			log.info("cannot remove element ?");
 		toModel.remove(jListTo.getSelectedIndex());
 		checkValid();
@@ -598,6 +595,12 @@ public class MyDooble extends javax.swing.JFrame {
 
 	protected void checkValid() {
 		jButtonMake.setEnabled(core.isCoherent());
+		updateStatusBar();
+	}
+
+	private void updateStatusBar() {
+		String msg = "Éléments requis: " + core.getNbItemsReq();
+		jLabelStatusBar.setText(msg);
 	}
 
 	public void about() {
