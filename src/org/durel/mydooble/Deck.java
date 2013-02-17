@@ -24,6 +24,7 @@ import java.util.Vector;
 /**
  * @see http://melusine.eu.org/syracuse/luatex/dobble/
  * @see http://images.math.cnrs.fr/Dobble-et-la-geometrie-finie.html
+ * @see http://www.scribd.com/full/32602239?access_key=key-290ldts3eb15fhdyt1mf
  * @author Bastien Durel
  */
 public class Deck extends Vector<Deck.Card> {

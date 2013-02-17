@@ -31,11 +31,16 @@ import java.util.Random;
 import java.util.Vector;
 import java.util.logging.Logger;
 
+import org.durel.mydooble.Deck.DeckException;
+
 /**
  * @author Bastien Durel
  * 
  */
 public class Core {
+	/**
+	 * Number of symbols by card
+	 */
 	private int nbItems;
 	private List<Item> itemStock = new Vector<Item>();
 	protected static Random rnd = new Random();
@@ -74,11 +79,12 @@ public class Core {
 	}
 	
 	public int getNbItemsReq() {
-		int lNbItemsReq = 0;
-		for (int i = 1; i <= nbItems; ++i) {
-			lNbItemsReq += i;
+		try {
+			return Deck.computeDeckSize(nbItems);
+		} catch (DeckException e) {
+			log.info(e.getLocalizedMessage());
+			return 0;
 		}
-		return lNbItemsReq;
 	}
 	
 	public int getNbItemsReq(int m) {
@@ -100,8 +106,7 @@ public class Core {
 	public boolean isCoherentMulti() {
 		if (itemStock.isEmpty())
 			return false;
-		int nbCards = 1 + (nbItems - 1) * nbItems;
-		return nbCards == itemStock.size();
+		return getNbItemsReq() == itemStock.size();
 	}
 
 	static void print(List<Card> c) {
