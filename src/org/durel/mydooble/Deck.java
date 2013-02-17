@@ -131,15 +131,20 @@ public class Deck extends Vector<Deck.Card> {
 
 	/** tests */
 	public static void main(String[] args) {
-		System.out.println("card size: 3 -> " + computeDeckSize(3));
-		System.out.println("card size: 8 -> " + computeDeckSize(8));
-		System.out.println("card size: 4 -> " + computeDeckSize(4));
-		System.out.println("card size: 6 -> " + computeDeckSize(6));
+		// System.out.println("card size: 3 -> " + computeDeckSize(3));
+		// System.out.println("card size: 8 -> " + computeDeckSize(8));
+		// System.out.println("card size: 4 -> " + computeDeckSize(4));
+		// System.out.println("card size: 6 -> " + computeDeckSize(6));
 
-		Deck deck = computeDeck(3);
-		System.out.println("deck size: " + deck.size());
-		for (Iterator<Card> it = deck.iterator(); it.hasNext();) {
-			System.out.println(it.next());
+		int s[] = { 3, 4, 6, 8, 12 };
+		for (int i = 0; i < s.length; ++i) {
+			Deck deck = computeDeck(s[i]);
+			System.out.println("card size: " + s[i]);
+			System.out.println(" -> deck size: " + deck.size());
+			for (Iterator<Card> it = deck.iterator(); it.hasNext();) {
+				System.out.println(it.next());
+			}
+			System.out.println("*****************************************************************");
 		}
 	}
 
