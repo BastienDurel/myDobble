@@ -52,22 +52,31 @@ public class Deck extends Vector<Deck.Card> {
 		}
 	}
 
+	public static class DeckException extends Exception {
+		public DeckException(String string) {
+			super(string);
+		}
+
+		private static final long serialVersionUID = -6786584519124554014L;
+	}
+
 	/**
 	 * Compute the deck size for a given card size
 	 * 
 	 * @param cardSize
 	 *          card size
 	 * @return maximum deck size
+	 * @throws DeckException 
 	 */
-	static public int computeDeckSize(int cardSize) {
+	static public int computeDeckSize(int cardSize) throws DeckException {
 		int p = cardSize - 1;
 		if (!isPrime(p))
-			throw new RuntimeException(p + " (" + cardSize + " - 1) is not prime");
+			throw new DeckException(p + " (" + cardSize + " - 1) is not prime");
 		// Remove 1 as we don't count the 'infinity' point in computation
 		return p * p + p + 1;
 	}
 
-	public static Deck computeDeck(int cardSize) {
+	public static Deck computeDeck(int cardSize) throws DeckException {
 		computeDeckSize(cardSize);
 		int p = cardSize - 1;
 
@@ -129,16 +138,48 @@ public class Deck extends Vector<Deck.Card> {
 		return true;
 	}
 
+	/**
+	 * @param deck
+	 * @throws DeckException
+	 */
+	public static void checkDeck(Deck deck) throws DeckException {
+		Iterator<Card> it1 = deck.iterator();
+		while (it1.hasNext()) {
+			Card c1 = it1.next();
+			Iterator<Card> it2 = deck.iterator();
+			while (it2.hasNext()) {
+				Card c2 = it2.next();
+				if (c1.equals(c2)) {
+					continue;
+				}
+				int count = 0;
+				Iterator<Integer> s = c1.iterator();
+				while (s.hasNext()) {
+					if (c2.contains(s.next()))
+						count++;
+				}
+				if (count == 0)
+					throw new DeckException("Card " + c1 + " and card " + c2
+							+ " do not contains any match");
+				if (count > 1)
+					throw new DeckException("Card " + c1 + " and card " + c2 + " contains " + count
+							+ " matches");
+			}
+		}
+	}
+
 	/** tests */
 	public static void main(String[] args) {
-		// System.out.println("card size: 3 -> " + computeDeckSize(3));
-		// System.out.println("card size: 8 -> " + computeDeckSize(8));
-		// System.out.println("card size: 4 -> " + computeDeckSize(4));
-		// System.out.println("card size: 6 -> " + computeDeckSize(6));
-
 		int s[] = { 3, 4, 6, 8, 12 };
 		for (int i = 0; i < s.length; ++i) {
-			Deck deck = computeDeck(s[i]);
+			Deck deck;
+			try {
+				deck = computeDeck(s[i]);
+				checkDeck(deck);
+			} catch (DeckException e) {
+				System.err.println(e.getLocalizedMessage());
+				continue;
+			}
 			System.out.println("card size: " + s[i]);
 			System.out.println(" -> deck size: " + deck.size());
 			for (Iterator<Card> it = deck.iterator(); it.hasNext();) {
@@ -146,6 +187,7 @@ public class Deck extends Vector<Deck.Card> {
 			}
 			System.out.println("*****************************************************************");
 		}
+
 	}
 
 }
