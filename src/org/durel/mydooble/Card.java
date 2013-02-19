@@ -25,9 +25,11 @@ import java.util.Collections;
 class Card {
 	Item syms[];
 	int nb = 0;
+	int need;
 
 	public Card(int aNbItems) {
 		syms = new Item[aNbItems];
+		need = aNbItems;
 	}
 
 	public boolean have(int c) {
@@ -51,7 +53,7 @@ class Card {
 	}
 
 	public boolean isFull() {
-		return nb == syms.length;
+		return nb == syms.length && nb == need;
 	}
 
 	public void toPDF(PDF out) {

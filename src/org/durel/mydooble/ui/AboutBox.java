@@ -36,7 +36,7 @@ public class AboutBox extends JDialog {
 		super(parent, "About myDobble", true);
 		Box b = Box.createVerticalBox();
 		b.add(Box.createGlue());
-		b.add(new JLabel("myDobble Copyright © 2011  Bastien Durel"));
+		b.add(new JLabel("myDobble Copyright © 2011-2013  Bastien Durel"));
 		b.add(new JLabel("This program comes with ABSOLUTELY NO WARRANTY"));
 		b.add(new JLabel("This is free software, and you are welcome to redistribute it"));
 		b.add(new JLabel("under certain conditions; see file 'gpl.txt' for details."));

@@ -25,6 +25,7 @@ import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Random;
@@ -42,12 +43,16 @@ public class Core {
 	 * Number of symbols by card
 	 */
 	private int nbItems;
+
 	private List<Item> itemStock = new Vector<Item>();
+
 	protected static Random rnd = new Random();
+
 	Logger log = Logger.getLogger("org.durel.mydooble");
 
 	protected class LogWriter extends OutputStream {
 		Logger log;
+
 		StringBuffer b = new StringBuffer();
 
 		LogWriter(Logger log) {
@@ -77,7 +82,7 @@ public class Core {
 	public void add(Item i) {
 		itemStock.add(i);
 	}
-	
+
 	public int getNbItemsReq() {
 		try {
 			return Deck.computeDeckSize(nbItems);
@@ -86,7 +91,7 @@ public class Core {
 			return 0;
 		}
 	}
-	
+
 	public int getNbItemsReq(int m) {
 		if (m == 2)
 			return getNbItemsReq();
@@ -160,42 +165,34 @@ public class Core {
 	}
 
 	private ArrayList<Card> subBuild() throws Exception {
-		int nbCards = nbItems + 1;
+		int nbCards = Deck.computeDeckSize(nbItems);
 		ArrayList<Card> l = new ArrayList<Card>(nbCards);
-		for (int i = 0; i < nbCards; ++i) {
-			l.add(new Card(nbItems));
-		}
-		ArrayList<Item> s = new ArrayList<Item>();
-		for (int i = 0; i < itemStock.size(); ++i) {
-			s.add(itemStock.get(i));
-		}
-		Collections.shuffle(s);
-		int row;
-		int itc = 0;
-		for (row = 0; row < nbCards; ++row) {
-			Card curcard = l.get(row);
-			for (int col = row; col < nbItems; ++col) {
-				Item curit = s.get(itc++);
-				curcard.syms[col] = curit;
-				curcard.nb++;
-				Card secCard = l.get(col + 1);
-				secCard.syms[row] = curit;
-				secCard.nb++;
-				log.info("add item(" + curit + ") to [" + row + "][" + col
-						+ "] and [" + (col + 1) + "][" + row + "]");
-			}
-		}
+		Deck d = Deck.computeDeck(nbItems);
 
-		print(l, new PrintStream(new LogWriter(log)));
+		if (itemStock.size() < nbCards)
+			throw new DeckException("Not enough items in stock");
+
+		ArrayList<Item> items = new ArrayList<Item>(itemStock);
+		Collections.shuffle(items);
+
+		for (Iterator<Deck.Card> i = d.iterator(); i.hasNext();) {
+			Card card = new Card(nbItems);
+			Deck.Card cur = i.next();
+			for (int j = 0; j < nbItems; ++j) {
+				card.add(items.get(cur.get(j)));
+			}
+			l.add(card);
+		}
 		return l;
 	}
-	
+
 	public void multiBuild() throws Exception {
-			subMultiBuild();
+		subMultiBuild();
 	}
-	
-	private void putInCard(Card cur, ArrayList<Card> l, ArrayList<Item> s, int fromItem) throws Exception {
-		if (cur.isFull()) 
+
+	private void putInCard(Card cur, ArrayList<Card> l, ArrayList<Item> s, int fromItem)
+			throws Exception {
+		if (cur.isFull())
 			throw new Exception("full");
 		for (int i = fromItem; i < s.size(); ++i) {
 			Item it = s.get(i);
@@ -204,14 +201,14 @@ public class Core {
 			boolean bad = false;
 			for (int j = 0; j < cur.nb; ++j) {
 				Item sec = cur.syms[j];
-				for (int  k = 0; k < l.size(); ++k) {
+				for (int k = 0; k < l.size(); ++k) {
 					Card cmp = l.get(k);
 					if (cmp.have(it) && cmp.have(sec)) {
 						bad = true;
 						break;
 					}
 				}
-				if (bad) 
+				if (bad)
 					break;
 			}
 			if (!bad) {
@@ -221,11 +218,11 @@ public class Core {
 		}
 		throw new Exception("Not found");
 	}
-	
+
 	private ArrayList<Card> subMultiBuild() throws Exception {
 		if (!isCoherentMulti())
 			throw new Exception("Incoherent stock");
-			
+
 		int nbCards = 1 + (nbItems - 1) * nbItems;
 		ArrayList<Card> l = new ArrayList<Card>(nbCards);
 		for (int i = 0; i < nbCards; ++i) {
@@ -235,8 +232,8 @@ public class Core {
 		for (int i = 0; i < itemStock.size(); ++i) {
 			s.add(itemStock.get(i));
 		}
-		//Collections.shuffle(s);
-		
+		// Collections.shuffle(s);
+
 		// TODO
 		Item it = s.get(0);
 		int cnt = 1;
@@ -246,23 +243,23 @@ public class Core {
 			while (cur.isFull() == false)
 				cur.add(s.get(cnt++));
 		}
-		try{
-		int row = nbItems;
-		for (int i = 1; i < nbItems; ++i) {
-			it = l.get(0).syms[i];
-			for (int j = 1; j < nbItems; ++j) {
-				Card cur = l.get(row++);
-				cur.add(it);
-				while (!cur.isFull()) {
-					putInCard(cur, l, s, nbItems);
+		try {
+			int row = nbItems;
+			for (int i = 1; i < nbItems; ++i) {
+				it = l.get(0).syms[i];
+				for (int j = 1; j < nbItems; ++j) {
+					Card cur = l.get(row++);
+					cur.add(it);
+					while (!cur.isFull()) {
+						putInCard(cur, l, s, nbItems);
+					}
 				}
 			}
-		}
-		}catch (Exception e) {
+		} catch (Exception e) {
 			print(l, new PrintStream(new LogWriter(log)));
 			throw e;
 		}
-		
+
 		print(l, new PrintStream(new LogWriter(log)));
 		return l;
 	}

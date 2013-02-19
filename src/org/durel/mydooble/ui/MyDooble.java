@@ -75,7 +75,7 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	private static final long serialVersionUID = -3231189728332798370L;
-	private static final String version = "1.0 rc3";
+	private static final String version = "1.0";
 
 	private JList jListTo;
 
@@ -428,7 +428,7 @@ public class MyDooble extends javax.swing.JFrame {
 					}
 				});
 			}
-			setSize(400, 400);
+			setSize(435, 450);
 			setTitle("myDobble " + version);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -599,7 +599,10 @@ public class MyDooble extends javax.swing.JFrame {
 	}
 
 	private void updateStatusBar() {
-		String msg = "Éléments requis: " + core.getNbItemsReq();
+		int nb = core.getNbItemsReq();
+		String msg = "Éléments requis: " + nb;
+		if (nb == 0)
+			msg = "Nombre d'éléments invalide";
 		jLabelStatusBar.setText(msg);
 	}
 
