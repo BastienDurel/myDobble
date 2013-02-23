@@ -18,14 +18,6 @@ package org.durel.mydooble.ui;
  You should have received a copy of the GNU Affero General Public License
  along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
 
- it under the terms of the GNU Affero General Public License as
- published by the Free Software Foundation, either version 3 of the
- License, or (at your option) any later version.
-
- it under the terms of the GNU Affero General Public License as 
- published by the Free Software Foundation, either version 3 of the 
- License, or License, or (at your option) any later version.
-
  */
 
 import java.awt.datatransfer.DataFlavor;
