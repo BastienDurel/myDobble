@@ -1,22 +1,22 @@
 package org.durel.mydooble;
 
 /*
-  	Copyright © 2011 Bastien Durel
+ Copyright © 2011 Bastien Durel
 
-    This file is part of myDobble.
+ This file is part of myDobble.
 
-    myDobble is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+ myDobble is free software: you can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation, either version 3 of the License, or
+ (at your option) any later version.
 
-    myDobble is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+ myDobble is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
+ You should have received a copy of the GNU General Public License
+ along with myDobble.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 import java.io.ByteArrayOutputStream;
@@ -34,18 +34,32 @@ import com.itextpdf.text.pdf.PdfWriter;
 
 public class PDF {
 	Document doc = null;
+
 	PdfWriter writer = null;
+
 	ByteArrayOutputStream buffer = null;
-	//PDPage page = null;
+
+	// PDPage page = null;
 	Rectangle cardBox = null;
+
 	int nbItems = 0;
 
+	protected int COL_NUM = 3;
+
+	protected int ROW_NUM = 3;
+
 	private int col = -1;
+
 	private int row = 0;
+
 	final float WIDTH = (float) (6.3 * 72 / 2.54);
+
 	final float HEIGHT = (float) (9.25 * 72 / 2.54);
+
 	final float MARGIN = (float) (0.5 * 72 / 2.54);
+
 	final BaseFont font = BaseFont.createFont();
+
 	final int FONT_SIZE = 12;
 
 	public PDF(int nbItems) throws IOException, DocumentException {
@@ -59,36 +73,40 @@ public class PDF {
 		PdfContentByte cb = writer.getDirectContent();
 		cb.setFontAndSize(font, FONT_SIZE);
 	}
-	
+
 	public boolean save(String file) throws IOException {
+		FileOutputStream fo = null;
 		try {
 			doc.close();
 			writer.flush();
-			FileOutputStream fo = new FileOutputStream(file);
+			fo = new FileOutputStream(file);
 			fo.write(buffer.toByteArray());
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			if (fo != null)
+				fo.close();
 		}
 		return true;
 	}
 
 	public void newPage() {
 		doc.newPage();
-		//page = new PDPage();
-		//doc.addPage(page);
+		// page = new PDPage();
+		// doc.addPage(page);
 		col = -1;
 		row = 0;
 	}
 
 	public void newCard() {
-			col++;
-			if (col > 2) {
-				col = 0;
-				row++;
-				if (row > 2)
-					newPage();
-			}
+		col++;
+		if (col > (COL_NUM - 1)) {
+			col = 0;
+			row++;
+			if (row > (ROW_NUM - 1))
+				newPage();
+		}
 		float x1 = col * (WIDTH + MARGIN) + MARGIN;
 		float x2 = (col + 1) * (WIDTH + MARGIN);
 		float y2 = (row + 1) * (HEIGHT + MARGIN);

@@ -44,6 +44,7 @@ class DobbleLoadDir implements Runnable {
 				dobble.fromModel.clear();
 				for (int i = 0; i < children.length; ++i) {
 					if (children[i].toLowerCase().endsWith(".jpg")
+							|| children[i].toLowerCase().endsWith(".png")
 							|| children[i].toLowerCase().endsWith(".tiff")) {
 						final String img = dir.getAbsolutePath() + File.separatorChar
 								+ children[i];

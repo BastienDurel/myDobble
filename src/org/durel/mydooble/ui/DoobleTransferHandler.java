@@ -97,6 +97,7 @@ public class DoobleTransferHandler extends TransferHandler {
 	
 	@Override
 	protected java.awt.datatransfer.Transferable createTransferable(JComponent c) {
+		@SuppressWarnings("rawtypes")
 		JList l = (JList)c;
 		Object v = l.getSelectedValue();
 		if (v instanceof DoobleListModel.Image) {

@@ -35,6 +35,7 @@ import java.util.prefs.Preferences;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractListModel;
 
+@SuppressWarnings("rawtypes")
 public class DoobleListModel extends AbstractListModel {
 
 	public static class Image {
@@ -100,27 +101,29 @@ public class DoobleListModel extends AbstractListModel {
 		fireIntervalRemoved(this, 0, index0);
 	}
 
-	public void add(String string) {
+	public boolean add(String string) {
 		for (int i = 0; i < model.size(); ++i) {
 			if (model.get(i).equalsIgnoreCase(string)) {
 				log.warning("ignoring redondent entry");
-				return;
+				return false;
 			}
 		}
 		int index0 = model.size();
 		model.add(string);
 		fireIntervalAdded(this, index0, model.size());
+		return true;
 	}
 
-	public void add(Image img) {
+	public boolean add(Image img) {
 		if (cache.containsKey(img.name)) {
 			log.warning("ignoring redondent entry");
-			return;
+			return false;
 		}
 		int index0 = model.size();
 		model.add(img.name);
 		cache.put(img.name, img);
 		fireIntervalAdded(this, index0, model.size());
+		return true;
 	}
 
 	public void remove(int selectedIndex) {

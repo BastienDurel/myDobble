@@ -33,13 +33,13 @@ public class ImageItem extends Item {
 	public ImageItem(String img) throws IOException {
 		super();
 		image = img;
-		if (!(image.toLowerCase().endsWith(".jpg"))
+		if (!(image.toLowerCase().endsWith(".jpg")
 				|| image.toLowerCase().endsWith(".tif")
-				|| image.toLowerCase().endsWith(".tiff")) {
+				|| image.toLowerCase().endsWith(".tiff")
+				|| image.toLowerCase().endsWith(".png"))) {
 			throw new IOException("Image type not supported:" + image);
 		} else {
-			// Throws FileNotFoundException
-			new FileInputStream(image);
+			new FileInputStream(image).close();
 		}
 	}
 	
